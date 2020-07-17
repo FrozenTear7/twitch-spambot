@@ -35,7 +35,7 @@ const produceSpam = async () => {
       .sort((a, b) => b[1] - a[1])[0]
 
   if (mostPopularSpam && mostPopularSpam[0] !== prevMsg) {
-    client.say(process.env.USERNAME, mostPopularSpam[0])
+    client.say(process.env.CHANNEL_NAME, mostPopularSpam[0])
     prevMsg = mostPopularSpam[0]
   }
 
