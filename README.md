@@ -26,7 +26,7 @@ _.env_ file is also required to provide data for the api and the config.
 Create an _.env_ file consiting of values as shown below:
 
 ```bash
-USERNAME=<username>
+TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
 CHANNEL_NAME=<channel_name>
 CHANNEL_ID=<channel_id>

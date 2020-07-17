@@ -7,7 +7,7 @@ dotenv.config({ silent: true })
 
 const readInterval = 3000 // in [ms]
 const similarityThreshold = 0.8
-const repetitionThreshold = 5
+const repetitionThreshold = 4
 
 let prevMsg = null
 let currentMsgDict = {}
@@ -15,7 +15,7 @@ let channelSubEmotes = []
 
 const opts = {
   identity: {
-    username: process.env.USERNAME,
+    username: process.env.TWITCH_USERNAME,
     password: process.env.CLIENT_TOKEN,
   },
   channels: [process.env.CHANNEL_NAME],
@@ -35,7 +35,9 @@ const produceSpam = async () => {
       .sort((a, b) => b[1] - a[1])[0]
 
   if (mostPopularSpam && mostPopularSpam[0] !== prevMsg) {
+    console.log(mostPopularSpam[0])
     client.say(process.env.CHANNEL_NAME, mostPopularSpam[0])
+    // client.say(process.env.TWITCH_USERNAME, mostPopularSpam[0])
     prevMsg = mostPopularSpam[0]
   }
 
@@ -71,7 +73,8 @@ const onMessageHandler = (target, context, msg, self) => {
     )
 
     // We reject messages containing sub emotes
-    if (subEmotesIntersection.length === 0) incrementOrAdd(msg)
+    if (!channelSubEmotes.includes(msg) && subEmotesIntersection.length === 0)
+      incrementOrAdd(msg)
   } else {
     incrementOrAdd(msg)
   }
@@ -92,8 +95,19 @@ client.on('connected', onConnectedHandler)
 request(
   `https://api.twitchemotes.com/api/v4/channels/${process.env.CHANNEL_ID}`,
   (error, response, body) => {
-    channelSubEmotes = JSON.parse(body).emotes.map((emote) => emote.code)
-    console.log(channelSubEmotes)
+    if (error) {
+      console.log(error)
+      process.exit()
+    } else {
+      body = JSON.parse(body)
+      if (body.error) {
+        console.log(body.error)
+        process.exit()
+      } else {
+        channelSubEmotes = body.emotes.map((emote) => emote.code)
+        console.log(channelSubEmotes)
+      }
+    }
   }
 )
 
