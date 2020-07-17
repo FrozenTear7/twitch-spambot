@@ -6,11 +6,10 @@ import request from 'request'
 dotenv.config({ silent: true })
 
 const readInterval = 3000 // in [ms]
-const sleepInterval = 20000
+const sleepInterval = 30000
 const similarityThreshold = 0.8
-const repetitionThreshold = 3
+const repetitionThreshold = 5
 
-let prevMsg = null
 let currentMsgDict = {}
 let channelSubEmotes = []
 
@@ -39,11 +38,10 @@ const produceSpam = async () => {
       .filter((entry) => entry[1] >= repetitionThreshold)
       .sort((a, b) => b[1] - a[1])[0]
 
-  if (mostPopularSpam && mostPopularSpam[0] !== prevMsg) {
+  if (mostPopularSpam) {
     console.log(mostPopularSpam[0])
     client.say(process.env.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(process.env.TWITCH_USERNAME, mostPopularSpam[0])
-    prevMsg = mostPopularSpam[0]
 
     // Sleep for some time not to spam too hard
     await new Promise((resolve) => setTimeout(resolve, sleepInterval))
@@ -63,7 +61,18 @@ const incrementOrAdd = (msg) => {
 
   // If there is a match similar enough increment the value
   if (bestMatch.target && bestMatch.rating >= similarityThreshold)
-    currentMsgDict[bestMatch.target] += 1
+    currentMsgDict[bestMatch.target]++
+  // Or if a message is a substring or vice-versa
+  else if (
+    Object.keys(currentMsgDict).some(
+      (key) => key.includes(msg) || msg.includes(key)
+    )
+  )
+    Object.keys(currentMsgDict).forEach((key) => {
+      if (key.includes(msg) || msg.includes(key)) {
+        currentMsgDict[key]++
+      }
+    })
   // Else just create an entry
   else currentMsgDict[msg] = 1
 }
