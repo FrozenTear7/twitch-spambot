@@ -1,0 +1,29 @@
+{
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "env": {
+    "es6": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "singleQuote": true,
+        "semi": false
+      }
+    ],
+    "no-console": 0,
+    "no-underscore-dangle": "off",
+    "no-param-reassign": "off",
+    "import/first": "off",
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"],
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
+    "consistent-return": "off"
+  }
+}
