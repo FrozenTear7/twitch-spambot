@@ -6,14 +6,19 @@ import request from 'request'
 dotenv.config({ silent: true })
 
 const readInterval = 3000 // in [ms]
+const sleepInterval = 20000
 const similarityThreshold = 0.8
-const repetitionThreshold = 4
+const repetitionThreshold = 3
 
 let prevMsg = null
 let currentMsgDict = {}
 let channelSubEmotes = []
 
 const opts = {
+  connection: {
+    reconnect: true,
+    secure: true,
+  },
   identity: {
     username: process.env.TWITCH_USERNAME,
     password: process.env.CLIENT_TOKEN,
@@ -39,6 +44,9 @@ const produceSpam = async () => {
     client.say(process.env.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(process.env.TWITCH_USERNAME, mostPopularSpam[0])
     prevMsg = mostPopularSpam[0]
+
+    // Sleep for some time not to spam too hard
+    await new Promise((resolve) => setTimeout(resolve, sleepInterval))
   }
 
   currentMsgDict = {}
@@ -66,7 +74,7 @@ const onMessageHandler = (target, context, msg, self) => {
     return
   }
 
-  if (!process.env.SUBMODE) {
+  if (process.env.SUBMODE === '0') {
     const msgWords = msg.split(' ')
     const subEmotesIntersection = msgWords.filter((word) =>
       channelSubEmotes.includes(word)

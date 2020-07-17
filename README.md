@@ -30,7 +30,7 @@ TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
 CHANNEL_NAME=<channel_name>
 CHANNEL_ID=<channel_id>
-SUBMODE=false/true
+SUBMODE=1/0
 ```
 
 To get Client ID and secret, you have to create an application
