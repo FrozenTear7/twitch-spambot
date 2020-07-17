@@ -37,7 +37,7 @@ To get Client ID and secret, you have to create an application
 on the Twitch Developer site.
 Client token can be retrieved from https://twitchapps.com/tmi/.
 
-To get Channel ID, you have to make a request to _https://api.twitch.tv/kraken/users?login=forsen_ with Headers:
+To get Channel ID, you have to make a request to _https://api.twitch.tv/kraken/users?login=channel_name_ with Headers:
 
 - Client-ID: <client_id>
 - Accept: application/vnd.twitchtv.v5+json
