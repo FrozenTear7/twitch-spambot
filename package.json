@@ -9,6 +9,7 @@
   "main": "index.js",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "string-similarity": "^4.0.1",
     "tmi.js": "^1.5.0"
   },
   "devDependencies": {
