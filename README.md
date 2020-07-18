@@ -19,8 +19,37 @@ _Node.js_ is required, the program was created with _v14.4.0_.
 
 ```bash
 npm install
+
+npm start
+
+or
+
+npm start 3000 30000 0.8 5
+```
+
+The program has 4 available arguments:
+
+- readInterval: default = 3000 _ms_
+- sleepInterval: default = 30000 _ms_
+- similarityThreshold: default = 0.8 _(80%)_
+- repetitionThreshold: default = 5
+
+The arguments are passed as:
+
+```bash
+npm start <readInterval> <sleepInterval> <similarityThreshold> <repetitionThreshold>
+```
+
+If you wish to omit a particular argument, just pass a Javascript _falsy_ value,
+or an argument that is not a number.
+You can also just run:
+
+```
 npm start
 ```
+
+to run the program with the default arguments.
+Adjust the arguments to match the desired channel's chat speed and activity.
 
 _.env_ file is also required to provide data for the api and the config.
 Create an _.env_ file consiting of values as shown below:
@@ -41,13 +70,3 @@ To get Channel ID, you have to make a request to _https://api.twitch.tv/kraken/u
 
 - Client-ID: <client_id>
 - Accept: application/vnd.twitchtv.v5+json
-
-You can also adjust the config at the top of the _index.js_ file to your liking.
-
-Example config:
-
-```js
-const readInterval = 5000 // in [ms]
-const similarityThreshold = 0.8
-const repetitionThreshold = 3
-```

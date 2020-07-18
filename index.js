@@ -1,50 +1,32 @@
-import dotenv from 'dotenv'
 import tmi from 'tmi.js'
 import stringSimilarity from 'string-similarity'
 import request from 'request'
-
-dotenv.config({ silent: true })
-
-const readInterval = 3000 // in [ms]
-const sleepInterval = 30000
-const similarityThreshold = 0.8
-const repetitionThreshold = 5
+import config from './utils/config.js'
+import { sleep } from './utils/sleep.js'
 
 let currentMsgDict = {}
 let channelSubEmotes = []
 
-const opts = {
-  connection: {
-    reconnect: true,
-    secure: true,
-  },
-  identity: {
-    username: process.env.TWITCH_USERNAME,
-    password: process.env.CLIENT_TOKEN,
-  },
-  channels: [process.env.CHANNEL_NAME],
-}
-
-const client = new tmi.client(opts)
+const client = new tmi.client(config.clientOptions)
 
 const produceSpam = async () => {
   // During the wait we gather messages to the dictionary
-  await new Promise((resolve) => setTimeout(resolve, readInterval))
+  await sleep(config.readInterval)
 
   let mostPopularSpam = null
 
   if (currentMsgDict !== {})
     mostPopularSpam = Object.entries(currentMsgDict)
-      .filter((entry) => entry[1] >= repetitionThreshold)
+      .filter((entry) => entry[1] >= config.repetitionThreshold)
       .sort((a, b) => b[1] - a[1])[0]
 
   if (mostPopularSpam) {
-    console.log(mostPopularSpam[0])
-    client.say(process.env.CHANNEL_NAME, mostPopularSpam[0])
-    // client.say(process.env.TWITCH_USERNAME, mostPopularSpam[0])
+    console.log(mostPopularSpam)
+    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
-    await new Promise((resolve) => setTimeout(resolve, sleepInterval))
+    await sleep(config.sleepInterval)
   }
 
   currentMsgDict = {}
@@ -54,36 +36,33 @@ const produceSpam = async () => {
 
 const incrementOrAdd = (msg) => {
   const dictKeys = Object.keys(currentMsgDict)
-  let bestMatch = ''
+  let bestMatch = {}
 
   if (dictKeys.length > 0)
     bestMatch = stringSimilarity.findBestMatch(msg, dictKeys).bestMatch
 
   // If there is a match similar enough increment the value
-  if (bestMatch.target && bestMatch.rating >= similarityThreshold)
+  if (bestMatch.target && bestMatch.rating >= config.similarityThreshold)
     currentMsgDict[bestMatch.target]++
   // Or if a message is a substring or vice-versa
-  else if (
-    Object.keys(currentMsgDict).some(
-      (key) => key.includes(msg) || msg.includes(key)
-    )
-  )
-    Object.keys(currentMsgDict).forEach((key) => {
+  else if (dictKeys.some((key) => key.includes(msg) || msg.includes(key)))
+    dictKeys.forEach((key) => {
       if (key.includes(msg) || msg.includes(key)) {
         currentMsgDict[key]++
       }
     })
-  // Else just create an entry
+  // Else just create a new entry
   else currentMsgDict[msg] = 1
 }
 
 // Pass every received message to the parser
 const onMessageHandler = (target, context, msg, self) => {
+  // Ignore own messages
   if (self) {
     return
   }
 
-  if (process.env.SUBMODE === '0') {
+  if (config.SUBMODE === '0') {
     const msgWords = msg.split(' ')
     const subEmotesIntersection = msgWords.filter((word) =>
       channelSubEmotes.includes(word)
@@ -104,29 +83,34 @@ const onConnectedHandler = (addr, port) => {
   produceSpam()
 }
 
-// Register handlers
-client.on('message', onMessageHandler)
-client.on('connected', onConnectedHandler)
-
-// Fetch sub emotes
-request(
-  `https://api.twitchemotes.com/api/v4/channels/${process.env.CHANNEL_ID}`,
-  (error, response, body) => {
-    if (error) {
-      console.log(error)
-      process.exit()
-    } else {
-      body = JSON.parse(body)
-      if (body.error) {
-        console.log(body.error)
-        process.exit()
+const fetchSubEmotes = async () => {
+  request(
+    `https://api.twitchemotes.com/api/v4/channels/${config.CHANNEL_ID}`,
+    (error, response, body) => {
+      if (error) {
+        console.log(error)
       } else {
-        channelSubEmotes = body.emotes.map((emote) => emote.code)
-        console.log(channelSubEmotes)
+        body = JSON.parse(body)
+        if (body.error) {
+          console.log(body.error)
+        } else {
+          channelSubEmotes = body.emotes.map((emote) => emote.code)
+          // console.log(channelSubEmotes)
+        }
       }
     }
-  }
-)
+  )
+}
 
-// Start the client
-client.connect()
+const main = async () => {
+  await fetchSubEmotes()
+
+  // Register handlers
+  client.on('message', onMessageHandler)
+  client.on('connected', onConnectedHandler)
+
+  // Start the client
+  client.connect()
+}
+
+main()
