@@ -23,7 +23,7 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    // client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
@@ -36,25 +36,16 @@ const produceSpam = async () => {
   produceSpam() // The spam never ends
 }
 
-const incrementOrAdd = (msg) => {
+const addMessage = (msg) => {
   const dictKeys = Object.keys(currentMsgDict)
-  let bestMatch = {}
 
-  if (dictKeys.length > 0)
-    bestMatch = stringSimilarity.findBestMatch(msg, dictKeys).bestMatch
+  if (!currentMsgDict[msg]) currentMsgDict[msg] = 0
 
-  // If there is a match similar enough increment the value
-  if (bestMatch.target && bestMatch.rating >= config.similarityThreshold)
-    currentMsgDict[bestMatch.target]++
-  // Or if a message is a substring or vice-versa
-  else if (dictKeys.some((key) => key.includes(msg) || msg.includes(key)))
-    dictKeys.forEach((key) => {
-      if (key.includes(msg) || msg.includes(key)) {
-        currentMsgDict[key]++
-      }
-    })
-  // Else just create a new entry
-  else currentMsgDict[msg] = 1
+  dictKeys.forEach((key) => {
+    const similarity = stringSimilarity.compareTwoStrings(msg, key)
+    currentMsgDict[key] += similarity
+    currentMsgDict[msg] += similarity
+  })
 }
 
 // Pass every received message to the parser
@@ -76,9 +67,9 @@ const onMessageHandler = (target, context, msg, self) => {
 
     // We reject messages containing sub emotes
     if (!channelSubEmotes.includes(msg) && subEmotesIntersection.length === 0)
-      incrementOrAdd(msg)
+      addMessage(msg)
   } else {
-    incrementOrAdd(msg)
+    addMessage(msg)
   }
 }
 
@@ -89,9 +80,9 @@ const onConnectedHandler = (addr, port) => {
   produceSpam()
 }
 
-const fetchSubEmotes = async () => {
+const fetchSubEmotes = async (channelId) => {
   request(
-    `https://api.twitchemotes.com/api/v4/channels/${config.CHANNEL_ID}`,
+    `https://api.twitchemotes.com/api/v4/channels/${channelId}`,
     (error, response, body) => {
       if (error) {
         console.log(error)
@@ -109,7 +100,9 @@ const fetchSubEmotes = async () => {
 }
 
 const main = async () => {
-  await fetchSubEmotes()
+  const channelsToIgnore = config.CHANNEL_IDS.split(',')
+
+  channelsToIgnore.forEach((channelId) => fetchSubEmotes(channelId))
 
   // Register handlers
   client.on('message', onMessageHandler)

@@ -8,7 +8,7 @@ const {
   TWITCH_USERNAME,
   CLIENT_TOKEN,
   CHANNEL_NAME,
-  CHANNEL_ID,
+  CHANNEL_IDS,
   SUBMODE,
 } = process.env
 
@@ -16,7 +16,7 @@ if (
   TWITCH_USERNAME === undefined ||
   CLIENT_TOKEN === undefined ||
   CHANNEL_NAME === undefined ||
-  CHANNEL_ID === undefined ||
+  CHANNEL_IDS === undefined ||
   SUBMODE === undefined
 ) {
   console.log('Please provide a valid .env config')
@@ -50,7 +50,7 @@ export default {
   TWITCH_USERNAME,
   CLIENT_TOKEN,
   CHANNEL_NAME,
-  CHANNEL_ID,
+  CHANNEL_IDS,
   SUBMODE,
   clientOptions,
   readInterval,

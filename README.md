@@ -58,7 +58,7 @@ Create an _.env_ file consiting of values as shown below:
 TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
 CHANNEL_NAME=<channel_name>
-CHANNEL_ID=<channel_id>
+CHANNEL_IDS=<channel_id>(,<channel_id2>,<channel_id3>) # pass more channels to ignore after ','
 SUBMODE=1/0
 ```
 
