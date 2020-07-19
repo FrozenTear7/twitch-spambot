@@ -4,20 +4,13 @@ dotenv.config({ silent: true })
 
 // .env config
 
-const {
-  TWITCH_USERNAME,
-  CLIENT_TOKEN,
-  CHANNEL_NAME,
-  CHANNEL_IDS,
-  SUBMODE,
-} = process.env
+const { TWITCH_USERNAME, CLIENT_TOKEN, CHANNEL_NAME, CHANNEL_IDS } = process.env
 
 if (
   TWITCH_USERNAME === undefined ||
   CLIENT_TOKEN === undefined ||
   CHANNEL_NAME === undefined ||
-  CHANNEL_IDS === undefined ||
-  SUBMODE === undefined
+  CHANNEL_IDS === undefined
 ) {
   console.log('Please provide a valid .env config')
   process.exit()
@@ -50,7 +43,6 @@ export default {
   CLIENT_TOKEN,
   CHANNEL_NAME,
   CHANNEL_IDS,
-  SUBMODE,
   clientOptions,
   readInterval,
   sleepInterval,

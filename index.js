@@ -23,7 +23,7 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    // client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
@@ -59,7 +59,7 @@ const onMessageHandler = (target, context, msg, self) => {
 
   msgAuthors = [...msgAuthors, context.username]
 
-  if (config.SUBMODE === '0') {
+  if (channelSubEmotes.length !== 0) {
     const msgWords = msg.split(' ')
     const subEmotesIntersection = msgWords.filter((word) =>
       channelSubEmotes.includes(word)
@@ -107,15 +107,13 @@ const fetchAllSubEmotes = async (channelsToIgnore) => {
 }
 
 const main = async () => {
-  if (config.SUBMODE === '0') {
-    const channelsToIgnore = config.CHANNEL_IDS.split(',')
+  const channelsToIgnore = config.CHANNEL_IDS.split(',')
 
-    console.log('Fetching all sub emotes')
-    await fetchAllSubEmotes(channelsToIgnore)
-    console.log('Finished fetching sub emotes')
+  console.log('Fetching all sub emotes')
+  await fetchAllSubEmotes(channelsToIgnore)
+  console.log('Finished fetching sub emotes')
 
-    // console.log(channelSubEmotes)
-  }
+  // console.log(channelSubEmotes)
 
   // Register handlers
   client.on('message', onMessageHandler)
