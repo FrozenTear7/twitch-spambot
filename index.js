@@ -6,6 +6,7 @@ import { sleep } from './utils/sleep.js'
 
 let currentMsgDict = {}
 let channelSubEmotes = []
+let msgAuthors = []
 
 const client = new tmi.client(config.clientOptions)
 
@@ -22,7 +23,7 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    // client.say(config.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
@@ -30,6 +31,7 @@ const produceSpam = async () => {
   }
 
   currentMsgDict = {}
+  msgAuthors = []
 
   produceSpam() // The spam never ends
 }
@@ -61,6 +63,10 @@ const onMessageHandler = (target, context, msg, self) => {
   if (self) {
     return
   }
+
+  if (msgAuthors.includes(context.username)) return
+
+  msgAuthors = [...msgAuthors, context.username]
 
   if (config.SUBMODE === '0') {
     const msgWords = msg.split(' ')
