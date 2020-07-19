@@ -23,7 +23,7 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    // client.say(config.CHANNEL_NAME, mostPopularSpam[0])
     // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
@@ -80,29 +80,42 @@ const onConnectedHandler = (addr, port) => {
   produceSpam()
 }
 
-const fetchSubEmotes = async (channelId) => {
-  request(
-    `https://api.twitchemotes.com/api/v4/channels/${channelId}`,
-    (error, response, body) => {
-      if (error) {
-        console.log(error)
+const doRequest = (url) => {
+  return new Promise((resolve, reject) => {
+    request(url, (error, res, body) => {
+      if (!error && res.statusCode == 200) {
+        resolve(body)
       } else {
-        body = JSON.parse(body)
-        if (body.error) {
-          console.log(body.error)
-        } else {
-          channelSubEmotes = body.emotes.map((emote) => emote.code)
-          // console.log(channelSubEmotes)
-        }
+        reject(error)
       }
-    }
+    })
+  })
+}
+
+const fetchAllSubEmotes = async (channelsToIgnore) => {
+  await Promise.all(
+    channelsToIgnore.map(async (channelId) => {
+      const body = await doRequest(
+        `https://api.twitchemotes.com/api/v4/channels/${channelId}`
+      )
+      channelSubEmotes = [
+        ...channelSubEmotes,
+        ...JSON.parse(body).emotes.map((emote) => emote.code),
+      ]
+    })
   )
 }
 
 const main = async () => {
-  const channelsToIgnore = config.CHANNEL_IDS.split(',')
+  if (config.SUBMODE === '0') {
+    const channelsToIgnore = config.CHANNEL_IDS.split(',')
 
-  channelsToIgnore.forEach((channelId) => fetchSubEmotes(channelId))
+    console.log('Fetching all sub emotes')
+    await fetchAllSubEmotes(channelsToIgnore)
+    console.log('Finished fetching sub emotes')
+
+    // console.log(channelSubEmotes)
+  }
 
   // Register handlers
   client.on('message', onMessageHandler)

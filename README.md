@@ -24,20 +24,19 @@ npm start
 
 or
 
-npm start 3000 30000 0.8 5
+npm start 3000 30000 5
 ```
 
 The program has 4 available arguments:
 
 - readInterval: default = 3000 _ms_
 - sleepInterval: default = 30000 _ms_
-- similarityThreshold: default = 0.8 _(80%)_
 - repetitionThreshold: default = 5
 
 The arguments are passed as:
 
 ```bash
-npm start <readInterval> <sleepInterval> <similarityThreshold> <repetitionThreshold>
+npm start <readInterval> <sleepInterval> <repetitionThreshold>
 ```
 
 If you wish to omit a particular argument, just pass a Javascript _falsy_ value,

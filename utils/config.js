@@ -43,8 +43,7 @@ const programArgs = process.argv.slice(2)
 
 const readInterval = +programArgs[0] || 3000 // in [ms]
 const sleepInterval = +programArgs[1] || 30000 // in [ms]
-const similarityThreshold = +programArgs[2] || 0.8 // 0 - 1 similarity range
-const repetitionThreshold = +programArgs[3] || 5
+const repetitionThreshold = +programArgs[2] || 5
 
 export default {
   TWITCH_USERNAME,
@@ -55,6 +54,5 @@ export default {
   clientOptions,
   readInterval,
   sleepInterval,
-  similarityThreshold,
   repetitionThreshold,
 }
