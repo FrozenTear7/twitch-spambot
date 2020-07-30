@@ -23,7 +23,7 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    client.say(config.CHANNEL_NAME, mostPopularSpam[0])
+    client.say(config.channelName, mostPopularSpam[0])
     // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard

@@ -29,14 +29,15 @@ npm start 3000 30000 5
 
 The program has 4 available arguments:
 
-- readInterval: default = 3000 _ms_
+- channelName (required)
+- readInterval: default = 5000 _ms_
 - sleepInterval: default = 30000 _ms_
-- repetitionThreshold: default = 5
+- repetitionThreshold: default = 4
 
 The arguments are passed as:
 
 ```bash
-npm start <readInterval> <sleepInterval> <repetitionThreshold>
+npm start <channelName> <readInterval> <sleepInterval> <repetitionThreshold>
 ```
 
 If you wish to omit a particular argument, just pass a Javascript _falsy_ value,
@@ -56,7 +57,6 @@ Create an _.env_ file consiting of values as shown below:
 ```bash
 TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
-CHANNEL_NAME=<channel_name>
 CHANNEL_IDS=<channel_id>(,<channel_id2>,<channel_id3>) # pass more channels to ignore after ','
 ```
 

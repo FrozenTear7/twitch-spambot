@@ -9,10 +9,23 @@ const { TWITCH_USERNAME, CLIENT_TOKEN, CHANNEL_NAME, CHANNEL_IDS } = process.env
 if (
   TWITCH_USERNAME === undefined ||
   CLIENT_TOKEN === undefined ||
-  CHANNEL_NAME === undefined ||
   CHANNEL_IDS === undefined
 ) {
   console.log('Please provide a valid .env config')
+  process.exit()
+}
+
+// Program arguments read from the console
+
+const programArgs = process.argv.slice(2)
+
+const channelName = programArgs[0]
+const readInterval = +programArgs[1] || 5000 // in [ms]
+const sleepInterval = +programArgs[2] || 30000 // in [ms]
+const repetitionThreshold = +programArgs[3] || 4
+
+if (!channelName) {
+  console.log('Please provide a channel name')
   process.exit()
 }
 
@@ -27,22 +40,14 @@ const clientOptions = {
     username: process.env.TWITCH_USERNAME,
     password: process.env.CLIENT_TOKEN,
   },
-  channels: [process.env.CHANNEL_NAME],
+  channels: [channelName],
 }
-
-// Program arguments read from the console
-
-const programArgs = process.argv.slice(2)
-
-const readInterval = +programArgs[0] || 3000 // in [ms]
-const sleepInterval = +programArgs[1] || 30000 // in [ms]
-const repetitionThreshold = +programArgs[2] || 5
 
 export default {
   TWITCH_USERNAME,
   CLIENT_TOKEN,
-  CHANNEL_NAME,
   CHANNEL_IDS,
+  channelName,
   clientOptions,
   readInterval,
   sleepInterval,
