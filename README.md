@@ -20,11 +20,11 @@ _Node.js_ is required, the program was created with _v14.4.0_.
 ```bash
 npm install
 
-npm start
+npm start <channelName>
 
 or
 
-npm start 3000 30000 5
+npm start <channelName> 3000 30000 5
 ```
 
 The program has 4 available arguments:
