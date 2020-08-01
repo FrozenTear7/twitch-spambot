@@ -10,6 +10,22 @@ let msgAuthors = []
 
 const client = new tmi.client(config.clientOptions)
 
+const isSubEmote = (msg) => {
+  if (channelSubEmotes.length !== 0) {
+    const msgWords = msg.split(' ')
+    const subEmotesIntersection = msgWords.filter((word) =>
+      channelSubEmotes.includes(word)
+    )
+
+    // We reject messages containing sub emotes
+    if (channelSubEmotes.includes(msg) || subEmotesIntersection.length !== 0)
+      return true
+    else return false
+  }
+
+  return false
+}
+
 const produceSpam = async () => {
   // During the wait we gather messages to the dictionary
   await sleep(config.readInterval)
@@ -39,12 +55,13 @@ const produceSpam = async () => {
 const addMessage = (msg) => {
   const dictKeys = Object.keys(currentMsgDict)
 
-  if (!currentMsgDict[msg]) currentMsgDict[msg] = 0
+  if (!isSubEmote(msg) && !currentMsgDict[msg]) currentMsgDict[msg] = 1
 
   dictKeys.forEach((key) => {
     const similarity = stringSimilarity.compareTwoStrings(msg, key)
+
     currentMsgDict[key] += similarity
-    currentMsgDict[msg] += similarity
+    if (!isSubEmote(msg)) currentMsgDict[msg] += similarity
   })
 }
 
@@ -59,18 +76,7 @@ const onMessageHandler = (target, context, msg, self) => {
 
   msgAuthors = [...msgAuthors, context.username]
 
-  if (channelSubEmotes.length !== 0) {
-    const msgWords = msg.split(' ')
-    const subEmotesIntersection = msgWords.filter((word) =>
-      channelSubEmotes.includes(word)
-    )
-
-    // We reject messages containing sub emotes
-    if (!channelSubEmotes.includes(msg) && subEmotesIntersection.length === 0)
-      addMessage(msg)
-  } else {
-    addMessage(msg)
-  }
+  addMessage(msg)
 }
 
 // Start the spam once connected
