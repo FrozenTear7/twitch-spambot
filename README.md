@@ -45,7 +45,7 @@ or an argument that is not a number.
 You can also just run:
 
 ```
-npm start
+npm start <channelName>
 ```
 
 to run the program with the default arguments.
