@@ -32,12 +32,12 @@ The program has 4 available arguments:
 - channelName (required)
 - readInterval: default = 5000 _ms_
 - sleepInterval: default = 30000 _ms_
-- repetitionThreshold: default = 4
+- scoreThreshold: default = 4
 
 The arguments are passed as:
 
 ```bash
-npm start <channelName> <readInterval> <sleepInterval> <repetitionThreshold>
+npm start <channelName> <readInterval> <sleepInterval> <scoreThreshold>
 ```
 
 If you wish to omit a particular argument, just pass a Javascript _falsy_ value,

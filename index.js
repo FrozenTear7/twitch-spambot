@@ -13,14 +13,15 @@ const client = new tmi.client(config.clientOptions)
 const isSubEmote = (msg) => {
   if (channelSubEmotes.length !== 0) {
     const msgWords = msg.split(' ')
-    const subEmotesIntersection = msgWords.filter((word) =>
-      channelSubEmotes.includes(word)
-    )
 
-    // We reject messages containing sub emotes
-    if (channelSubEmotes.includes(msg) || subEmotesIntersection.length !== 0)
-      return true
-    else return false
+    channelSubEmotes.forEach((subEmote) => {
+      if (
+        msgWords.some(
+          (word) => word === subEmote || word.includes(`${subEmote}_`)
+        )
+      )
+        return true
+    })
   }
 
   return false
@@ -40,7 +41,6 @@ const produceSpam = async () => {
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
     client.say(config.channelName, mostPopularSpam[0])
-    // client.say(config.TWITCH_USERNAME, mostPopularSpam[0])
 
     // Sleep for some time not to spam too hard
     await sleep(config.sleepInterval)
@@ -68,9 +68,9 @@ const addMessage = (msg) => {
 // Pass every received message to the parser
 const onMessageHandler = (target, context, msg, self) => {
   // Ignore own messages
-  if (self) {
-    return
-  }
+  // if (self) {
+  //   return
+  // }
 
   if (msgAuthors.includes(context.username)) return
 
