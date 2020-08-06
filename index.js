@@ -10,18 +10,41 @@ let msgAuthors = []
 
 const client = new tmi.client(config.clientOptions)
 
+const getBaseSpam = (msg) => {
+  const minLength = 3
+
+  let result = ''
+  let repetitions = 0
+
+  for (let i = minLength; i < msg.length; i++) {
+    const msgSubstring = msg.substring(0, i)
+
+    const substringRegex = new RegExp(msgSubstring, 'g')
+    const regexMatch = msg.match(substringRegex)
+    const countOccurences = (regexMatch || []).length
+
+    if (countOccurences > repetitions) {
+      result = msgSubstring
+      repetitions = countOccurences
+    } else if (countOccurences === repetitions) {
+      result = msgSubstring
+    }
+  }
+
+  return result
+}
+
 const isSubEmote = (msg) => {
   if (channelSubEmotes.length !== 0) {
     const msgWords = msg.split(' ')
 
-    channelSubEmotes.forEach((subEmote) => {
+    for (const subEmote of channelSubEmotes)
       if (
         msgWords.some(
           (word) => word === subEmote || word.includes(`${subEmote}_`)
         )
       )
         return true
-    })
   }
 
   return false
@@ -59,18 +82,25 @@ const addMessage = (msg) => {
 
   dictKeys.forEach((key) => {
     const similarity = stringSimilarity.compareTwoStrings(msg, key)
+    const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
+      getBaseSpam(msg),
+      key
+    )
 
-    currentMsgDict[key] += similarity
-    if (!isSubEmote(msg)) currentMsgDict[msg] += similarity
+    const finalSimilarity =
+      similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
+
+    currentMsgDict[key] += finalSimilarity
+    if (!isSubEmote(msg)) currentMsgDict[msg] += finalSimilarity
   })
 }
 
 // Pass every received message to the parser
 const onMessageHandler = (target, context, msg, self) => {
   // Ignore own messages
-  // if (self) {
-  //   return
-  // }
+  if (self) {
+    return
+  }
 
   if (msgAuthors.includes(context.username)) return
 
