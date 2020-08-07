@@ -57,23 +57,6 @@ Create an _.env_ file consiting of values as shown below:
 ```bash
 TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
-CHANNEL_IDS=<channel_id>(,<channel_id2>,<channel_id3>) # pass more channels to ignore after ','
 ```
 
-To get Client ID and secret, you have to create an application
-on the Twitch Developer site.
 Client token can be retrieved from https://twitchapps.com/tmi/.
-
-CHANNEL_IDS is a string of channels, from which sub emotes should be ignored,
-for example if you're not a subscriber it would be wise to add the channel to
-ignores, as usually it will be a popular spam in this particular channel.
-
-Sometimes subscribers of other channels can start massively spamming that streamer's
-emotes, which may result in the bot posting it in the chat, so consider
-other channels as possibilites too.
-(I myself usually ignore about 4 main channels)
-
-To get Channel ID, you have to make a request to _https://api.twitch.tv/kraken/users?login=channel_name_ with Headers:
-
-- Client-ID: <client_id>
-- Accept: application/vnd.twitchtv.v5+json

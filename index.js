@@ -5,7 +5,7 @@ import config from './utils/config.js'
 import { sleep } from './utils/sleep.js'
 
 let currentMsgDict = {}
-let channelSubEmotes = []
+let globalEmotes = []
 let msgAuthors = []
 
 const client = new tmi.client(config.clientOptions)
@@ -16,36 +16,35 @@ const getBaseSpam = (msg) => {
   let result = ''
   let repetitions = 0
 
-  for (let i = minLength; i < msg.length; i++) {
-    const msgSubstring = msg.substring(0, i)
+  try {
+    for (let i = minLength; i < msg.length; i++) {
+      const msgSubstring = msg.substring(0, i)
 
-    const substringRegex = new RegExp(msgSubstring, 'g')
-    const regexMatch = msg.match(substringRegex)
-    const countOccurences = (regexMatch || []).length
+      const substringRegex = new RegExp(msgSubstring, 'g')
+      const regexMatch = msg.match(substringRegex)
+      const countOccurences = (regexMatch || []).length
 
-    if (countOccurences > repetitions) {
-      result = msgSubstring
-      repetitions = countOccurences
-    } else if (countOccurences === repetitions) {
-      result = msgSubstring
+      if (countOccurences > repetitions) {
+        result = msgSubstring
+        repetitions = countOccurences
+      } else if (countOccurences === repetitions) {
+        result = msgSubstring
+      }
     }
+  } catch (e) {
+    return ''
   }
 
   return result
 }
 
-const isSubEmote = (msg) => {
-  if (channelSubEmotes.length !== 0) {
-    const msgWords = msg.split(' ')
-
-    for (const subEmote of channelSubEmotes)
-      if (
-        msgWords.some(
-          (word) => word === subEmote || word.includes(`${subEmote}_`)
-        )
-      )
-        return true
-  }
+const isSubEmote = (emoteCodes) => {
+  if (emoteCodes.length !== 0)
+    if (
+      emoteCodes.filter((code) => !globalEmotes.includes(code)).length !== 0
+    ) {
+      return true
+    }
 
   return false
 }
@@ -75,10 +74,10 @@ const produceSpam = async () => {
   produceSpam() // The spam never ends
 }
 
-const addMessage = (msg) => {
+const addMessage = (msg, emoteCodes) => {
   const dictKeys = Object.keys(currentMsgDict)
 
-  if (!isSubEmote(msg) && !currentMsgDict[msg]) currentMsgDict[msg] = 1
+  if (!isSubEmote(emoteCodes) && !currentMsgDict[msg]) currentMsgDict[msg] = 1
 
   dictKeys.forEach((key) => {
     const similarity = stringSimilarity.compareTwoStrings(msg, key)
@@ -91,7 +90,7 @@ const addMessage = (msg) => {
       similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
 
     currentMsgDict[key] += finalSimilarity
-    if (!isSubEmote(msg)) currentMsgDict[msg] += finalSimilarity
+    if (!isSubEmote(emoteCodes)) currentMsgDict[msg] += finalSimilarity
   })
 }
 
@@ -102,11 +101,16 @@ const onMessageHandler = (target, context, msg, self) => {
     return
   }
 
+  let emoteCodes = []
+
+  if (context.emotes)
+    emoteCodes = Object.keys(context.emotes).map((code) => +code)
+
   if (msgAuthors.includes(context.username)) return
 
   msgAuthors = [...msgAuthors, context.username]
 
-  addMessage(msg)
+  addMessage(msg, emoteCodes)
 }
 
 // Start the spam once connected
@@ -128,28 +132,17 @@ const doRequest = (url) => {
   })
 }
 
-const fetchAllSubEmotes = async (channelsToIgnore) => {
-  await Promise.all(
-    channelsToIgnore.map(async (channelId) => {
-      const body = await doRequest(
-        `https://api.twitchemotes.com/api/v4/channels/${channelId}`
-      )
-      channelSubEmotes = [
-        ...channelSubEmotes,
-        ...JSON.parse(body).emotes.map((emote) => emote.code),
-      ]
-    })
-  )
+const fetchGlobalEmotes = async () => {
+  const res = await doRequest('https://api.twitchemotes.com/api/v4/channels/0')
+  const resJson = JSON.parse(res)
+
+  globalEmotes = resJson.emotes.map((emote) => emote.id)
 }
 
 const main = async () => {
-  const channelsToIgnore = config.CHANNEL_IDS.split(',')
-
-  console.log('Fetching all sub emotes')
-  await fetchAllSubEmotes(channelsToIgnore)
-  console.log('Finished fetching sub emotes')
-
-  // console.log(channelSubEmotes)
+  console.log('Fetching all global emotes')
+  await fetchGlobalEmotes()
+  console.log('Finished fetching global emotes')
 
   // Register handlers
   client.on('message', onMessageHandler)
