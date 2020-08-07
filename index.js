@@ -102,11 +102,14 @@ const onMessageHandler = (target, context, msg, self) => {
   }
 
   let emoteCodes = []
-
   if (context.emotes)
     emoteCodes = Object.keys(context.emotes).map((code) => +code)
 
   if (msgAuthors.includes(context.username)) return
+
+  const urlMatch = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+  const urlRegex = new RegExp(urlMatch)
+  if (msg.match(urlRegex)) return
 
   msgAuthors = [...msgAuthors, context.username]
 
