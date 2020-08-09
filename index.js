@@ -8,6 +8,8 @@ let currentMsgDict = {}
 let globalEmotes = []
 let msgAuthors = []
 
+const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*']
+
 const client = new tmi.client(config.clientOptions)
 
 const getBaseSpam = (msg) => {
@@ -57,12 +59,16 @@ const produceSpam = async () => {
 
   if (currentMsgDict !== {})
     mostPopularSpam = Object.entries(currentMsgDict)
-      .filter((entry) => entry[1] >= config.repetitionThreshold)
-      .sort((a, b) => b[1] - a[1])[0]
+      .filter((entry) => entry[1].score >= config.repetitionThreshold)
+      .sort((a, b) => b[1].score - a[1].score)[0]
 
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
-    client.say(config.channelName, mostPopularSpam[0])
+
+    if (mostPopularSpam[1].messageType === 'chat')
+      client.say(config.channelName, mostPopularSpam[0])
+    else if (mostPopularSpam[1].messageType === 'action')
+      client.say(config.channelName, `/me ${mostPopularSpam[0]}`)
 
     // Sleep for some time not to spam too hard
     await sleep(config.sleepInterval)
@@ -74,10 +80,11 @@ const produceSpam = async () => {
   produceSpam() // The spam never ends
 }
 
-const addMessage = (msg, emoteCodes) => {
+const addMessage = (msg, emoteCodes, messageType) => {
   const dictKeys = Object.keys(currentMsgDict)
 
-  if (!isSubEmote(emoteCodes) && !currentMsgDict[msg]) currentMsgDict[msg] = 1
+  if (!isSubEmote(emoteCodes) && !currentMsgDict[msg])
+    currentMsgDict[msg] = { score: 1, messageType: messageType }
 
   dictKeys.forEach((key) => {
     const similarity = stringSimilarity.compareTwoStrings(msg, key)
@@ -89,8 +96,8 @@ const addMessage = (msg, emoteCodes) => {
     const finalSimilarity =
       similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
 
-    currentMsgDict[key] += finalSimilarity
-    if (!isSubEmote(emoteCodes)) currentMsgDict[msg] += finalSimilarity
+    currentMsgDict[key].score += finalSimilarity
+    if (!isSubEmote(emoteCodes)) currentMsgDict[msg].score += finalSimilarity
   })
 }
 
@@ -101,19 +108,27 @@ const onMessageHandler = (target, context, msg, self) => {
     return
   }
 
+  const messageType = context['message-type']
+
+  // Skip sub emotes
   let emoteCodes = []
   if (context.emotes)
     emoteCodes = Object.keys(context.emotes).map((code) => +code)
-
   if (msgAuthors.includes(context.username)) return
 
+  // Skip URLs
   const urlMatch = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
   const urlRegex = new RegExp(urlMatch)
   if (msg.match(urlRegex)) return
 
+  // Skip commands
+  if (ignoreCharacters.includes(msg[0])) return
+
+  console.log(msg)
+
   msgAuthors = [...msgAuthors, context.username]
 
-  addMessage(msg, emoteCodes)
+  addMessage(msg, emoteCodes, messageType)
 }
 
 // Start the spam once connected
