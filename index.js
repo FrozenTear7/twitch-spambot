@@ -84,10 +84,24 @@ const produceSpam = async () => {
   produceSpam() // The spam never ends
 }
 
+const checkIgnoredMessage = (msg) => {
+  // Skip commands and messages containing ignored words from ./utils/ignoredWords.json
+  return (
+    ignoreCharacters.includes(msg[0]) ||
+    ignoredWordsJson.ignoredWords.some((substring) => msg.includes(substring))
+  )
+}
+
 const addMessage = (msg, emoteCodes, messageType) => {
   const dictKeys = Object.keys(currentMsgDict)
 
-  if (!isSubEmote(emoteCodes) && !currentMsgDict[msg])
+  /* If we want to ignore the message we still add its similarity 
+  to other messages' scores, but we don't add it to the dictionary */
+  if (
+    !isSubEmote(emoteCodes) &&
+    !currentMsgDict[msg] &&
+    !checkIgnoredMessage(msg)
+  )
     currentMsgDict[msg] = { score: 1, messageType: messageType }
 
   dictKeys.forEach((key) => {
@@ -101,7 +115,10 @@ const addMessage = (msg, emoteCodes, messageType) => {
       similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
 
     currentMsgDict[key].score += finalSimilarity
-    if (!isSubEmote(emoteCodes)) currentMsgDict[msg].score += finalSimilarity
+
+    // As earlier, if the messages wasn't added we don't add to its own score
+    if (!isSubEmote(emoteCodes) && !checkIgnoredMessage(msg))
+      currentMsgDict[msg].score += finalSimilarity
   })
 }
 
@@ -124,13 +141,6 @@ const onMessageHandler = (target, context, msg, self) => {
   const urlMatch = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
   const urlRegex = new RegExp(urlMatch)
   if (msg.match(urlRegex)) return
-
-  // Skip commands and messages containing ignored words from ./utils/ignoredWords.json
-  if (
-    ignoreCharacters.includes(msg[0]) ||
-    ignoredWordsJson.ignoredWords.some((substring) => msg.includes(substring))
-  )
-    return
 
   msgAuthors = [...msgAuthors, context.username]
 
