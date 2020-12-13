@@ -44,7 +44,7 @@ If you wish to omit a particular argument, just pass a Javascript _falsy_ value,
 or an argument that is not a number.
 You can also just run:
 
-```
+```bash
 npm start <channelName>
 ```
 
@@ -73,7 +73,7 @@ My example cases were:
 
 To use this feature edit the json file called `ignoredWords.json` in the `utils` directory of the project, with structure as shown below:
 
-```json
+```javascript
 {
   "ignoredWords": ["forsen1", "forsen2", "forsen3"] // 3 example words to ignore
 }
