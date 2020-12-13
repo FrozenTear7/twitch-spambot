@@ -3,6 +3,7 @@ import stringSimilarity from 'string-similarity'
 import request from 'request'
 import config from './utils/config.js'
 import { sleep } from './utils/sleep.js'
+import ignoredWordsJson from './utils/ignoredWords.json'
 
 let currentMsgDict = {}
 let globalEmotes = []
@@ -11,6 +12,8 @@ let msgAuthors = []
 const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*']
 
 const client = new tmi.client(config.clientOptions)
+
+const globalEmotesURI = 'https://api.twitchemotes.com/api/v4/channels/0'
 
 const getBaseSpam = (msg) => {
   const minLength = 3
@@ -34,6 +37,7 @@ const getBaseSpam = (msg) => {
       }
     }
   } catch (e) {
+    console.log(`getBaseSpam threw an exception: ${e}`)
     return ''
   }
 
@@ -121,10 +125,12 @@ const onMessageHandler = (target, context, msg, self) => {
   const urlRegex = new RegExp(urlMatch)
   if (msg.match(urlRegex)) return
 
-  // Skip commands
-  if (ignoreCharacters.includes(msg[0])) return
-
-  console.log(msg)
+  // Skip commands and messages containing ignored words from ./utils/ignoredWords.json
+  if (
+    ignoreCharacters.includes(msg[0]) ||
+    ignoredWordsJson.ignoredWords.some((substring) => msg.includes(substring))
+  )
+    return
 
   msgAuthors = [...msgAuthors, context.username]
 
@@ -150,8 +156,15 @@ const doRequest = (url) => {
   })
 }
 
+const onNoticeHandler = (channel, noticeType, noticeMsg) => {
+  if (noticeType === 'msg_channel_suspended' || noticeType === 'msg_banned') {
+    console.log(`Exception during execution: ${noticeMsg}`)
+    process.exit(0)
+  }
+}
+
 const fetchGlobalEmotes = async () => {
-  const res = await doRequest('https://api.twitchemotes.com/api/v4/channels/0')
+  const res = await doRequest(globalEmotesURI)
   const resJson = JSON.parse(res)
 
   globalEmotes = resJson.emotes.map((emote) => emote.id)
@@ -165,6 +178,7 @@ const main = async () => {
   // Register handlers
   client.on('message', onMessageHandler)
   client.on('connected', onConnectedHandler)
+  client.on('notice', onNoticeHandler)
 
   // Start the client
   client.connect()
