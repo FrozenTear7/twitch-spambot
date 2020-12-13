@@ -15,6 +15,8 @@ const client = new tmi.client(config.clientOptions)
 
 const globalEmotesURI = 'https://api.twitchemotes.com/api/v4/channels/0'
 
+const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 const getBaseSpam = (msg) => {
   const minLength = 3
 
@@ -25,7 +27,7 @@ const getBaseSpam = (msg) => {
     for (let i = minLength; i < msg.length; i++) {
       const msgSubstring = msg.substring(0, i)
 
-      const substringRegex = new RegExp(msgSubstring, 'g')
+      const substringRegex = new RegExp(escapeRegExp(msgSubstring), 'g')
       const regexMatch = msg.match(substringRegex)
       const countOccurences = (regexMatch || []).length
 
@@ -37,7 +39,7 @@ const getBaseSpam = (msg) => {
       }
     }
   } catch (e) {
-    console.log(`getBaseSpam threw an exception: ${e}`)
+    console.log(`getBaseSpam for: ${msg} threw an exception: ${e}`)
     return ''
   }
 
