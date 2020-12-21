@@ -3,18 +3,22 @@ import stringSimilarity from 'string-similarity'
 import config from './utils/config.js'
 import { sleep } from './utils/sleep.js'
 import ignoredWordsJson from './utils/ignoredWords.json'
-import { fetchGlobalEmotes, isSubEmote } from './utils/emoteUtils.js'
+import whitelistEmotes from './utils/whitelistEmotes.json'
+import { getAllowedEmotes, isSubEmote } from './utils/emoteUtils.js'
 import { getBaseSpam } from './utils/spamUtils.js'
 
 // Hold data for the current spam
 let currentMsgDict = {}
-let globalEmotes = []
+let allowedEmotes = []
 let msgAuthors = []
 let authorsSeen = []
 
-const globalEmotesURI = 'https://api.twitchemotes.com/api/v4/channels/0'
-
 const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
+const noticeTypeQuit = [
+  'msg_channel_suspended',
+  'msg_banned',
+  'msg_followersonly',
+] // Notice types to quit on
 
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 
@@ -69,7 +73,7 @@ const addMessage = (msg, emoteCodes, messageType) => {
   /* If we want to ignore the message we still add its similarity 
   to other messages' scores, but we don't add it to the dictionary */
   if (
-    !isSubEmote(globalEmotes, emoteCodes) &&
+    !isSubEmote(allowedEmotes, emoteCodes) &&
     !currentMsgDict[msg] &&
     !checkIgnoredMessage(msg)
   )
@@ -88,7 +92,7 @@ const addMessage = (msg, emoteCodes, messageType) => {
     currentMsgDict[key].score += finalSimilarity
 
     // As earlier, if the messages wasn't added we don't add to its own score
-    if (!isSubEmote(globalEmotes, emoteCodes) && !checkIgnoredMessage(msg))
+    if (!isSubEmote(allowedEmotes, emoteCodes) && !checkIgnoredMessage(msg))
       currentMsgDict[msg].score += finalSimilarity
   })
 }
@@ -127,11 +131,7 @@ const onConnectedHandler = (addr, port) => {
 }
 
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
-  if (
-    noticeType === 'msg_channel_suspended' ||
-    noticeType === 'msg_banned' ||
-    noticeType === 'msg_followersonly'
-  ) {
+  if (noticeTypeQuit.some(noticeType)) {
     console.log(`Exception during execution: ${noticeMsg}`)
     process.exit(0)
   } else {
@@ -144,7 +144,7 @@ const onNoticeHandler = (channel, noticeType, noticeMsg) => {
 
 const main = async () => {
   console.log('Fetching all global emotes')
-  globalEmotes = await fetchGlobalEmotes(globalEmotesURI)
+  allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
   console.log('Finished fetching global emotes')
 
   // Register handlers

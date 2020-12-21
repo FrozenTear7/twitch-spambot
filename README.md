@@ -59,7 +59,7 @@ TWITCH_USERNAME=<twitch_username>
 CLIENT_TOKEN=<client_token>
 ```
 
-Client token can be retrieved from https://twitchapps.com/tmi/.
+Client token can be retrieved from [here](https://twitchapps.com/tmi/).
 
 ## Additional ignored words
 
@@ -80,3 +80,20 @@ To use this feature edit the json file called `ignoredWords.json` in the `utils`
 ```
 
 with an array of ignored words of your choice.
+
+## Whitelist sub emotes
+
+If you're subscired to a streamer and want to user their emotes with this bot, add their channel ID to `whitelistEmotes.json` file in the `utils` directory.
+
+Since it would be troublesome for many people to create their own credentials for Twitch API requests you have to add the ID instead of the channel to simplify the process.
+
+At the moment being one example website that allows finding channel IDs by providing usernames can be found [here](https://staging.streamweasels.com/support/convert-twitch-username-to-user-id/).
+After getting the channel ID paste it in as:
+
+```javascript
+{
+  "channels": ["62300805"] // Example channel ID for NymN's channel
+}
+```
+
+Otherwise just leave the `channels` entry as an empty array.
