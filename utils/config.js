@@ -16,7 +16,7 @@ if (TWITCH_USERNAME === undefined || CLIENT_TOKEN === undefined) {
 const programArgs = process.argv.slice(2)
 
 const channelName = programArgs[0]
-const readInterval = +programArgs[1] || 5000 // in [ms]
+const readInterval = +programArgs[1] || 3000 // in [ms]
 const sleepInterval = +programArgs[2] || 30000 // in [ms]
 const repetitionThreshold = +programArgs[3] || 4
 

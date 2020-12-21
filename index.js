@@ -1,61 +1,24 @@
 import tmi from 'tmi.js'
 import stringSimilarity from 'string-similarity'
-import request from 'request'
 import config from './utils/config.js'
 import { sleep } from './utils/sleep.js'
 import ignoredWordsJson from './utils/ignoredWords.json'
+import { fetchGlobalEmotes, isSubEmote } from './utils/emoteUtils.js'
+import { getBaseSpam } from './utils/spamUtils.js'
 
+// Hold data for the current spam
 let currentMsgDict = {}
 let globalEmotes = []
 let msgAuthors = []
-
-const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*']
-
-const client = new tmi.client(config.clientOptions)
+let authorsSeen = []
 
 const globalEmotesURI = 'https://api.twitchemotes.com/api/v4/channels/0'
 
-const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
 
-const getBaseSpam = (msg) => {
-  const minLength = 3
+const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 
-  let result = ''
-  let repetitions = 0
-
-  try {
-    for (let i = minLength; i < msg.length; i++) {
-      const msgSubstring = msg.substring(0, i)
-
-      const substringRegex = new RegExp(escapeRegExp(msgSubstring), 'g')
-      const regexMatch = msg.match(substringRegex)
-      const countOccurences = (regexMatch || []).length
-
-      if (countOccurences > repetitions) {
-        result = msgSubstring
-        repetitions = countOccurences
-      } else if (countOccurences === repetitions) {
-        result = msgSubstring
-      }
-    }
-  } catch (e) {
-    console.log(`getBaseSpam for: ${msg} threw an exception: ${e}`)
-    return ''
-  }
-
-  return result
-}
-
-const isSubEmote = (emoteCodes) => {
-  if (emoteCodes.length !== 0)
-    if (
-      emoteCodes.filter((code) => !globalEmotes.includes(code)).length !== 0
-    ) {
-      return true
-    }
-
-  return false
-}
+const client = new tmi.client(config.clientOptions)
 
 const produceSpam = async () => {
   // During the wait we gather messages to the dictionary
@@ -63,6 +26,7 @@ const produceSpam = async () => {
 
   let mostPopularSpam = null
 
+  // Filter out only messages that meet the given threshold, then sort by usage
   if (currentMsgDict !== {})
     mostPopularSpam = Object.entries(currentMsgDict)
       .filter((entry) => entry[1].score >= config.repetitionThreshold)
@@ -71,12 +35,14 @@ const produceSpam = async () => {
   if (mostPopularSpam) {
     console.log(mostPopularSpam)
 
-    if (mostPopularSpam[1].messageType === 'chat')
-      client.say(config.channelName, mostPopularSpam[0])
-    else if (mostPopularSpam[1].messageType === 'action')
-      client.say(config.channelName, `/me ${mostPopularSpam[0]}`)
+    const messageType = mostPopularSpam[1].messageType
 
-    // Sleep for some time not to spam too hard
+    if (messageType === 'chat')
+      client.say(config.channelName, mostPopularSpam[0])
+    else if (messageType === 'action')
+      client.say(config.channelName, `/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
+
+    // Sleep for some time to not spam too hard
     await sleep(config.sleepInterval)
   }
 
@@ -87,10 +53,13 @@ const produceSpam = async () => {
 }
 
 const checkIgnoredMessage = (msg) => {
-  // Skip commands and messages containing ignored words from ./utils/ignoredWords.json
+  // Skip commands, user whispers and messages containing ignored words from ./utils/ignoredWords.json
   return (
     ignoreCharacters.includes(msg[0]) ||
-    ignoredWordsJson.ignoredWords.some((substring) => msg.includes(substring))
+    ignoredWordsJson.ignoredWords.some((substring) =>
+      msg.includes(substring)
+    ) ||
+    authorsSeen.some((author) => msg.includes(author))
   )
 }
 
@@ -100,7 +69,7 @@ const addMessage = (msg, emoteCodes, messageType) => {
   /* If we want to ignore the message we still add its similarity 
   to other messages' scores, but we don't add it to the dictionary */
   if (
-    !isSubEmote(emoteCodes) &&
+    !isSubEmote(globalEmotes, emoteCodes) &&
     !currentMsgDict[msg] &&
     !checkIgnoredMessage(msg)
   )
@@ -119,7 +88,7 @@ const addMessage = (msg, emoteCodes, messageType) => {
     currentMsgDict[key].score += finalSimilarity
 
     // As earlier, if the messages wasn't added we don't add to its own score
-    if (!isSubEmote(emoteCodes) && !checkIgnoredMessage(msg))
+    if (!isSubEmote(globalEmotes, emoteCodes) && !checkIgnoredMessage(msg))
       currentMsgDict[msg].score += finalSimilarity
   })
 }
@@ -140,51 +109,42 @@ const onMessageHandler = (target, context, msg, self) => {
   if (msgAuthors.includes(context.username)) return
 
   // Skip URLs
-  const urlMatch = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
-  const urlRegex = new RegExp(urlMatch)
-  if (msg.match(urlRegex)) return
+  const urlRegExp = new RegExp(urlRegex)
+  if (msg.match(urlRegExp)) return
 
   msgAuthors = [...msgAuthors, context.username]
+  authorsSeen = [...authorsSeen, context.username] // Gathering all authors so we can avoid whispering them unintentionally
 
   addMessage(msg, emoteCodes, messageType)
 }
 
-// Start the spam once connected
 const onConnectedHandler = (addr, port) => {
   console.log(`* Connected to ${addr}:${port}`)
   console.log('* Starting the spambot')
+
+  // Start the spam once connected
   produceSpam()
 }
 
-const doRequest = (url) => {
-  return new Promise((resolve, reject) => {
-    request(url, (error, res, body) => {
-      if (!error && res.statusCode == 200) {
-        resolve(body)
-      } else {
-        reject(error)
-      }
-    })
-  })
-}
-
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
-  if (noticeType === 'msg_channel_suspended' || noticeType === 'msg_banned') {
+  if (
+    noticeType === 'msg_channel_suspended' ||
+    noticeType === 'msg_banned' ||
+    noticeType === 'msg_followersonly'
+  ) {
     console.log(`Exception during execution: ${noticeMsg}`)
     process.exit(0)
+  } else {
+    console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
+    console.log(
+      'Address this in the Issues on Github if something important breaks here'
+    )
   }
-}
-
-const fetchGlobalEmotes = async () => {
-  const res = await doRequest(globalEmotesURI)
-  const resJson = JSON.parse(res)
-
-  globalEmotes = resJson.emotes.map((emote) => emote.id)
 }
 
 const main = async () => {
   console.log('Fetching all global emotes')
-  await fetchGlobalEmotes()
+  globalEmotes = await fetchGlobalEmotes(globalEmotesURI)
   console.log('Finished fetching global emotes')
 
   // Register handlers
