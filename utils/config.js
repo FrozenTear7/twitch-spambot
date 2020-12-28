@@ -19,6 +19,7 @@ const channelName = programArgs[0]
 const readInterval = +programArgs[1] || 3000 // in [ms]
 const sleepInterval = +programArgs[2] || 30000 // in [ms]
 const repetitionThreshold = +programArgs[3] || 4
+const mentionResponse = +programArgs[4] || 1 // 0 - don't respond, respond with the default message to the sender
 
 if (!channelName) {
   console.log('Please provide a channel name')
@@ -47,4 +48,5 @@ export default {
   readInterval,
   sleepInterval,
   repetitionThreshold,
+  mentionResponse,
 }

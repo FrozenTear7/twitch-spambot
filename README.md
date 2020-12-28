@@ -15,7 +15,7 @@ if we're not subbed.
 
 ## How to run the program
 
-_Node.js_ is required, the program was created with _v14.4.0_.
+[_Node.js_](https://nodejs.org/) is required, the program was created with _v14.4.0_.
 
 ```bash
 npm install
@@ -29,19 +29,27 @@ npm start <channelName> 3000 30000 5
 
 The program has 4 available arguments:
 
-- channelName (required)
-- readInterval: default = 5000 _ms_
-- sleepInterval: default = 30000 _ms_
-- scoreThreshold: default = 4
+- **channelName** (required) - channel to which we connect to
+- **readInterval**: default = 5000 _ms_ - the amount of time during which we gather channel messages and try to find the most popular spam
+- **sleepInterval**: default = 30000 _ms_ - duration of sleep after sending the message to the channel
+- **scoreThreshold**: default = 4 - score required for the most popular message to be sent
+- **mentionResponse**: default = 1 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `index.js` file in the `onMessageHandler` function)
 
 The arguments are passed as:
 
 ```bash
-npm start <channelName> <readInterval> <sleepInterval> <scoreThreshold>
+npm start <channelName> <readInterval> <sleepInterval> <scoreThreshold> <mentionResponse>
 ```
 
-If you wish to omit a particular argument, just pass a Javascript _falsy_ value,
-or an argument that is not a number.
+If you wish to omit a particular argument (except the `channelName`), just pass a Javascript _falsy_ value,
+or an argument that is not a number, for example:
+
+```bash
+npm start <channelName> - - 5 -
+```
+
+which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `scoreThreshold` from 4 to 5.
+
 You can also just run:
 
 ```bash

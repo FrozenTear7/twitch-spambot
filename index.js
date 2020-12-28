@@ -104,6 +104,18 @@ const onMessageHandler = (target, context, msg, self) => {
     return
   }
 
+  // If enabled, respond to the person who mentioned you
+  if (
+    config.mentionResponse === 1 &&
+    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
+  ) {
+    setTimeout(
+      () =>
+        client.say(config.channelName, `@${context.username} ConcernDoge 👌`),
+      2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
+    )
+  }
+
   const messageType = context['message-type']
 
   // Skip sub emotes
@@ -133,6 +145,9 @@ const onConnectedHandler = (addr, port) => {
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
   if (noticeTypeQuit.some(noticeType)) {
     console.log(`Exception during execution: ${noticeMsg}`)
+    process.exit(0)
+  } else if (noticeType === 'host_target_went_offline') {
+    console.log('Stream ended, stopping the spam')
     process.exit(0)
   } else {
     console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
