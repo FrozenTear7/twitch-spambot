@@ -24,6 +24,14 @@ const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-
 
 const client = new tmi.client(config.clientOptions)
 
+const sayInChannel = (msg) => {
+  try {
+    client.say(config.channelName, msg)
+  } catch (e) {
+    console.log(`Exception while printing to the channel: ${e}`)
+  }
+}
+
 const produceSpam = async () => {
   // During the wait we gather messages to the dictionary
   await sleep(config.readInterval)
@@ -41,10 +49,8 @@ const produceSpam = async () => {
 
     const messageType = mostPopularSpam[1].messageType
 
-    if (messageType === 'chat')
-      client.say(config.channelName, mostPopularSpam[0])
-    else if (messageType === 'action')
-      client.say(config.channelName, `/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
+    if (messageType === 'chat') sayInChannel(mostPopularSpam[0])
+    else if (messageType === 'action') sayInChannel(`/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
 
     // Sleep for some time to not spam too hard
     await sleep(config.sleepInterval)
@@ -110,8 +116,7 @@ const onMessageHandler = (target, context, msg, self) => {
     msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
   ) {
     setTimeout(
-      () =>
-        client.say(config.channelName, `@${context.username} ConcernDoge 👌`),
+      () => sayInChannel(`@${context.username} ConcernDoge 👌`),
       2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
     )
   }
@@ -143,6 +148,7 @@ const onConnectedHandler = (addr, port) => {
 }
 
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
+  console.log(noticeType)
   if (noticeTypeQuit.some(noticeType)) {
     console.log(`Exception during execution: ${noticeMsg}`)
     process.exit(0)
