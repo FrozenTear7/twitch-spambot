@@ -148,8 +148,8 @@ const onConnectedHandler = (addr, port) => {
 }
 
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
-  console.log(noticeType)
-  if (noticeTypeQuit.some(noticeType)) {
+  console.log(`Received notice: ${noticeType})`)
+  if (noticeTypeQuit.some((quitType) => quitType === noticeType)) {
     console.log(`Exception during execution: ${noticeMsg}`)
     process.exit(0)
   } else if (noticeType === 'host_target_went_offline') {
