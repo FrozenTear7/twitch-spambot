@@ -1,4 +1,4 @@
-import { doRequest } from './doRequest'
+import { doRequest } from '../utils/doRequest'
 
 const emotesURI = 'https://api.twitchemotes.com/api/v4/channels'
 
