@@ -41,8 +41,8 @@ export const onMessageHandler = (
     const urlRegExp = new RegExp(urlRegex)
     if (msg.match(urlRegExp)) return
 
-    msgAuthors = [...msgAuthors, context.username]
-    authorsSeen = [...authorsSeen, context.username] // Gathering all authors so we can avoid whispering them unintentionally
+    msgAuthors.push(context.username)
+    authorsSeen.push(context.username) // Gathering all authors so we can avoid whispering them unintentionally
 
     addMessage(
       msg,
