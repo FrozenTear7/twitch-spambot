@@ -45,7 +45,12 @@ const produceSpam = async () => {
       .sort((a, b) => b[1].score - a[1].score)[0]
 
   if (mostPopularSpam) {
-    console.log(mostPopularSpam)
+    const currentDate = new Date()
+    console.log(
+      `[${currentDate.toLocaleTimeString(
+        'pl-PL'
+      )}, score: ${mostPopularSpam[1].score.toFixed(2)}]: ${mostPopularSpam[0]}`
+    )
 
     const messageType = mostPopularSpam[1].messageType
 
@@ -148,19 +153,24 @@ const onConnectedHandler = (addr, port) => {
 }
 
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
-  console.log(`Received notice: ${noticeType})`)
+  console.log(`Received notice: ${noticeType}`)
+
   if (noticeTypeQuit.some((quitType) => quitType === noticeType)) {
     console.log(`Exception during execution: ${noticeMsg}`)
     process.exit(0)
-  } else if (noticeType === 'host_target_went_offline') {
-    console.log('Stream ended, stopping the spam')
-    process.exit(0)
-  } else {
-    console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
-    console.log(
-      'Address this in the Issues on Github if something important breaks here'
-    )
-  }
+  } else
+    switch (noticeType) {
+      case 'host_target_went_offline':
+        console.log('Stream ended, stopping the spam')
+        process.exit(0)
+      case 'msg_timedout':
+        console.log(noticeMsg)
+      default:
+        console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
+        console.log(
+          'Address this in the Issues on Github if something important breaks here'
+        )
+    }
 }
 
 const main = async () => {
