@@ -8,8 +8,6 @@ export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
 
   let mostPopularSpam
 
-  console.log(msgAuthors)
-
   // Filter out only messages that meet the given threshold, then sort by usage
   if (currentMsgDict !== {})
     mostPopularSpam = Object.entries(currentMsgDict)
@@ -41,7 +39,7 @@ export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
   for (var variableKey in currentMsgDict)
     if (currentMsgDict.hasOwnProperty(variableKey))
       delete currentMsgDict[variableKey]
-  // msgAuthors.length = 0
+  msgAuthors.length = 0
 
   produceSpam(client, currentMsgDict, msgAuthors) // The spam never ends
 }
