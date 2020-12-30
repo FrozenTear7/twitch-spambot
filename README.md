@@ -59,6 +59,12 @@ npm start <channelName>
 to run the program with the default arguments.
 Adjust the arguments to match the desired channel's chat speed and activity.
 
+You can also run multiple instances of the script at once by joining `npm start <channelName>` commands with `&` like:
+
+```bash
+npm start <channelName> & npm start <channelName2> & npm start <channelName3>
+```
+
 _.env_ file is also required to provide data for the api and the config.
 Create an _.env_ file consiting of values as shown below:
 

@@ -14,12 +14,6 @@ let msgAuthors = []
 let authorsSeen = []
 
 const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
-const noticeTypeQuit = [
-  'msg_channel_suspended',
-  'msg_banned',
-  'msg_followersonly',
-] // Notice types to quit on
-
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 
 const client = new tmi.client(config.clientOptions)
@@ -34,7 +28,7 @@ const sayInChannel = (msg) => {
 
 const produceSpam = async () => {
   // During the wait we gather messages to the dictionary
-  await sleep(config.readInterval)
+  await sleep(config.readInterval + Math.random() * (config.readInterval / 10))
 
   let mostPopularSpam = null
 
@@ -46,10 +40,11 @@ const produceSpam = async () => {
 
   if (mostPopularSpam) {
     const currentDate = new Date()
+    const currentDateFormatted = currentDate.toLocaleTimeString('pl-PL')
     console.log(
-      `[${currentDate.toLocaleTimeString(
-        'pl-PL'
-      )}, score: ${mostPopularSpam[1].score.toFixed(2)}]: ${mostPopularSpam[0]}`
+      `[${currentDateFormatted}, #${
+        config.channelName
+      }, score: ${mostPopularSpam[1].score.toFixed(2)}]: ${mostPopularSpam[0]}`
     )
 
     const messageType = mostPopularSpam[1].messageType
@@ -58,7 +53,9 @@ const produceSpam = async () => {
     else if (messageType === 'action') sayInChannel(`/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
 
     // Sleep for some time to not spam too hard
-    await sleep(config.sleepInterval)
+    await sleep(
+      config.sleepInterval + Math.random() * (config.sleepInterval / 10)
+    )
   }
 
   currentMsgDict = {}
@@ -155,22 +152,24 @@ const onConnectedHandler = (addr, port) => {
 const onNoticeHandler = (channel, noticeType, noticeMsg) => {
   console.log(`Received notice: ${noticeType}`)
 
-  if (noticeTypeQuit.some((quitType) => quitType === noticeType)) {
-    console.log(`Exception during execution: ${noticeMsg}`)
-    process.exit(0)
-  } else
-    switch (noticeType) {
-      case 'host_target_went_offline':
-        console.log('Stream ended, stopping the spam')
-        process.exit(0)
-      case 'msg_timedout':
-        console.log(noticeMsg)
-      default:
-        console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
-        console.log(
-          'Address this in the Issues on Github if something important breaks here'
-        )
-    }
+  switch (noticeType) {
+    case 'msg_channel_suspended':
+    case 'msg_banned':
+    case 'msg_followersonly':
+      console.log(`Exception during execution: ${noticeMsg}`)
+      process.exit(0)
+    case 'msg_timedout':
+    case 'msg_ratelimit':
+      console.log(noticeMsg)
+    case 'host_target_went_offline':
+      console.log('Stream ended, stopping the spam')
+      process.exit(0)
+    default:
+      console.log(`Unhandled notice of type: ${noticeType} - ${noticeMsg}`)
+      console.log(
+        'Address this in the Issues on Github if something important breaks here'
+      )
+  }
 }
 
 const main = async () => {
@@ -187,4 +186,8 @@ const main = async () => {
   client.connect()
 }
 
-main()
+try {
+  main()
+} catch (e) {
+  console.log(e)
+}
