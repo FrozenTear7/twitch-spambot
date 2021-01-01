@@ -3,6 +3,7 @@ import config from '../config/config.js'
 import { getBaseSpam } from '../messages/spamUtils.js'
 import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
 import { isSubEmote } from '../messages/emoteUtils.js'
+import { sayInChannel } from '../messages/sayInChannel.js'
 
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 
