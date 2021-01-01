@@ -37,9 +37,4 @@ const main = async () => {
   client.connect()
 }
 
-// Temporarily checking if anything else breaks
-try {
-  main()
-} catch (e) {
-  console.log(e)
-}
+main()

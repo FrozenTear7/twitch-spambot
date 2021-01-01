@@ -9,7 +9,9 @@ export const onNoticeHandler = (channel, noticeType, noticeMsg) => {
       process.exit(0)
     case 'msg_timedout':
     case 'msg_ratelimit':
+    case 'msg_duplicate':
       console.log(noticeMsg)
+      break
     case 'host_target_went_offline':
       console.log('Stream ended, stopping the spam')
       process.exit(0)
