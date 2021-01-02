@@ -15,11 +15,12 @@ export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
   // Filter out only messages that meet the given threshold, then sort by usage
   if (currentMsgDict !== {})
     mostPopularSpam = Object.entries(currentMsgDict)
-      .filter((entry) =>
-        entry[1].score >= config.repetitionThreshold &&
-        currentTimestamp - prevTimestamp > 30000 // If an identical message was sent 30s ago ignore the duplicates
-          ? true
-          : entry[0] != prevMsg
+      .filter(
+        (entry) =>
+          entry[1].score >= config.repetitionThreshold &&
+          (currentTimestamp - prevTimestamp > 30000 // If an identical message was sent 30s ago ignore the duplicates
+            ? true
+            : entry[0] != prevMsg)
       )
       .sort((a, b) => b[1].score - a[1].score)[0]
 
