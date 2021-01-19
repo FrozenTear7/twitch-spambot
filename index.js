@@ -12,9 +12,9 @@ let allowedEmotes = []
 let msgAuthors = []
 let authorsSeen = []
 
-const client = new tmi.client(config.clientOptions)
-
 const main = async () => {
+  const client = new tmi.client(config.clientOptions)
+
   console.log('Fetching all global emotes')
   allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
   console.log('Finished fetching global emotes')

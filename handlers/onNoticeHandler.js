@@ -10,6 +10,7 @@ export const onNoticeHandler = (channel, noticeType, noticeMsg) => {
     case 'msg_timedout':
     case 'msg_ratelimit':
     case 'msg_duplicate':
+    case 'msg_subsonly':
       console.log(noticeMsg)
       break
     case 'host_target_went_offline':

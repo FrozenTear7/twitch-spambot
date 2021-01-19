@@ -8,7 +8,7 @@ const { TWITCH_USERNAME, CLIENT_TOKEN } = process.env
 
 if (TWITCH_USERNAME === undefined || CLIENT_TOKEN === undefined) {
   console.log('Please provide a valid .env config')
-  process.exit()
+  process.exit(0)
 }
 
 // Program arguments read from the console
@@ -19,11 +19,11 @@ const channelName = programArgs[0]
 const readInterval = +programArgs[1] || 3000 // in [ms]
 const sleepInterval = +programArgs[2] || 30000 // in [ms]
 const repetitionThreshold = +programArgs[3] || 4
-const mentionResponse = +programArgs[4] || 1 // 0 - don't respond, respond with the default message to the sender
+const mentionResponse = +programArgs[4] || 0 // 0 - don't respond, 1 - respond with the default message to the sender
 
 if (!channelName) {
   console.log('Please provide a channel name')
-  process.exit()
+  process.exit(0)
 }
 
 // Options passed to the Twitch client

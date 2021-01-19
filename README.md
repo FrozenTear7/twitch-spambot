@@ -33,7 +33,7 @@ The program has 4 available arguments:
 - **readInterval**: default = 5000 _ms_ - the amount of time during which we gather channel messages and try to find the most popular spam
 - **sleepInterval**: default = 30000 _ms_ - duration of sleep after sending the message to the channel
 - **scoreThreshold**: default = 4 - score required for the most popular message to be sent
-- **mentionResponse**: default = 1 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `index.js` file in the `onMessageHandler` function)
+- **mentionResponse**: default = 0 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `index.js` file in the `onMessageHandler` function)
 
 The arguments are passed as:
 
