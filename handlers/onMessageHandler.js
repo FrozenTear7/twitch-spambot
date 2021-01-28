@@ -4,16 +4,12 @@ import { getBaseSpam } from '../messages/spamUtils.js'
 import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
 import { isSubEmote } from '../messages/emoteUtils.js'
 import { sayInChannel } from '../messages/sayInChannel.js'
+import { allowedEmotes } from '../index.js'
 
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 
 // Pass every received message to the parser
-export const onMessageHandler = (
-  allowedEmotes,
-  currentMsgDict,
-  msgAuthors,
-  authorsSeen
-) => {
+export const onMessageHandler = (currentMsgDict, msgAuthors, authorsSeen) => {
   return (target, context, msg, self) => {
     // Ignore own messages
     if (self) {
@@ -48,7 +44,6 @@ export const onMessageHandler = (
       msg,
       emoteCodes,
       context['message-type'],
-      allowedEmotes,
       currentMsgDict,
       authorsSeen
     )
@@ -59,7 +54,6 @@ const addMessage = (
   msg,
   emoteCodes,
   messageType,
-  allowedEmotes,
   currentMsgDict,
   authorsSeen
 ) => {

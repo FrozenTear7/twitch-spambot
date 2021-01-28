@@ -8,9 +8,9 @@ import { onMessageHandler } from './handlers/onMessageHandler.js'
 
 // Hold data for the current spam
 let currentMsgDict = {}
-let allowedEmotes = []
 let msgAuthors = []
 let authorsSeen = []
+export let allowedEmotes = []
 export let client
 
 const main = async () => {
@@ -23,7 +23,7 @@ const main = async () => {
   // Register handlers
   client.on(
     'message',
-    onMessageHandler(allowedEmotes, currentMsgDict, msgAuthors, authorsSeen)
+    onMessageHandler(currentMsgDict, msgAuthors, authorsSeen)
   )
   client.on('connected', onConnectedHandler(currentMsgDict, msgAuthors))
   client.on('notice', onNoticeHandler)
