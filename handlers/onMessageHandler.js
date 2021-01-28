@@ -9,7 +9,6 @@ const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-
 
 // Pass every received message to the parser
 export const onMessageHandler = (
-  client,
   allowedEmotes,
   currentMsgDict,
   msgAuthors,
@@ -27,7 +26,7 @@ export const onMessageHandler = (
       msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
     ) {
       setTimeout(
-        () => sayInChannel(client, `@${context.username} ConcernDoge 👌`),
+        () => sayInChannel(`@${context.username} ConcernDoge 👌`),
         2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
       )
     }

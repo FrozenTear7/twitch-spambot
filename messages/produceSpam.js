@@ -5,7 +5,7 @@ import { sleep } from '../utils/sleep.js'
 let prevTimestamp = 0
 let prevMsg
 
-export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
+export const produceSpam = async (currentMsgDict, msgAuthors) => {
   // During the wait we gather messages to the dictionary
   await sleep(config.readInterval + Math.random() * (config.readInterval / 10))
 
@@ -34,9 +34,8 @@ export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
     )
 
     const messageType = mostPopularSpam[1].messageType
-    if (messageType === 'chat') sayInChannel(client, mostPopularSpam[0])
-    else if (messageType === 'action')
-      sayInChannel(client, `/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
+    if (messageType === 'chat') sayInChannel(mostPopularSpam[0])
+    else if (messageType === 'action') sayInChannel(`/me ${mostPopularSpam[0]}`) // /me changes the message color to your nickname's color
 
     // Save current data for conditions in the next iteration
     prevTimestamp = Math.floor(Date.now())
@@ -54,5 +53,5 @@ export const produceSpam = async (client, currentMsgDict, msgAuthors) => {
       delete currentMsgDict[variableKey]
   msgAuthors.length = 0
 
-  produceSpam(client, currentMsgDict, msgAuthors) // The spam never ends
+  produceSpam(currentMsgDict, msgAuthors) // The spam never ends
 }

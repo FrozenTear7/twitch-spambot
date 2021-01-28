@@ -11,9 +11,10 @@ let currentMsgDict = {}
 let allowedEmotes = []
 let msgAuthors = []
 let authorsSeen = []
+export let client
 
 const main = async () => {
-  const client = new tmi.client(config.clientOptions)
+  client = new tmi.client(config.clientOptions)
 
   console.log('Fetching all global emotes')
   allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
@@ -22,15 +23,9 @@ const main = async () => {
   // Register handlers
   client.on(
     'message',
-    onMessageHandler(
-      client,
-      allowedEmotes,
-      currentMsgDict,
-      msgAuthors,
-      authorsSeen
-    )
+    onMessageHandler(allowedEmotes, currentMsgDict, msgAuthors, authorsSeen)
   )
-  client.on('connected', onConnectedHandler(client, currentMsgDict, msgAuthors))
+  client.on('connected', onConnectedHandler(currentMsgDict, msgAuthors))
   client.on('notice', onNoticeHandler)
 
   // Start the client
