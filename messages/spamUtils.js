@@ -9,8 +9,8 @@ export const getBaseSpam = (msg, spamMinLength = 3) => {
     for (let i = spamMinLength; i < msg.length; i++) {
       const msgSubstring = msg.substring(0, i)
 
-      const substringRegex = new RegExp(escapeRegExp(msgSubstring), 'g')
-      const regexMatch = msg.match(substringRegex)
+      const substringRegexp = new RegExp(escapeRegExp(msgSubstring), 'g')
+      const regexMatch = msg.match(substringRegexp)
       const countOccurences = (regexMatch || []).length
 
       if (countOccurences > repetitions) {
