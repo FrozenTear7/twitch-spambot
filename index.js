@@ -3,12 +3,10 @@ import config from './config/config.js'
 import whitelistEmotes from './config/whitelistEmotes.json'
 import { getAllowedEmotes } from './messages/emoteUtils.js'
 import { onNoticeHandler } from './handlers/onNoticeHandler.js'
-import { onConnectedHandler } from './handlers/onConnectedHandler.js'
 import { onMessageHandler } from './handlers/onMessageHandler.js'
 
 // Hold data for the current spam
-let currentMsgDict = {}
-let msgAuthors = []
+let currentMessages = []
 let authorsSeen = []
 export let allowedEmotes = []
 export let client
@@ -21,11 +19,10 @@ const main = async () => {
   console.log('Finished fetching global emotes')
 
   // Register handlers
-  client.on(
-    'message',
-    onMessageHandler(currentMsgDict, msgAuthors, authorsSeen)
+  client.on('message', onMessageHandler(currentMessages, authorsSeen))
+  client.on('connected', (addr, port) =>
+    console.log(`* Connected to ${addr}:${port}`)
   )
-  client.on('connected', onConnectedHandler(currentMsgDict, msgAuthors))
   client.on('notice', onNoticeHandler)
 
   // Start the client
