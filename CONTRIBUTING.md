@@ -13,7 +13,8 @@ please follow it in all your interactions with the project.
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
 2. Update the README.md with details of changes, this includes new environment, variables and files.
-3. Increase the version numbers in any examples files and the README.md to the venew version that this
+3. Do not make any changes to code styling enforced by the Eslint configurations.
+4. Increase the version numbers in any examples files and the README.md to the venew version that this
 Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. Your Pull Request should list the [owner of this repository](https://github.com/FrozenTear7) as the
+5. Your Pull Request should list the [owner of this repository](https://github.com/FrozenTear7) as the
 main reviewer, whose confirmation is required for request to be merged.
