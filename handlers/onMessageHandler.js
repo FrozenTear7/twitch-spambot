@@ -5,94 +5,87 @@ import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
 import { isSubEmote } from '../messages/emoteUtils.js'
 import { sayInChannel } from '../messages/sayInChannel.js'
 import { allowedEmotes } from '../index.js'
+import { logMessage } from '../utils/logMessage.js'
 
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 let messageCooldown = false
 let prevTimestamp = 0
 let prevMsg
 
+let currentMessages = []
+let authorsSeen = []
+
 // Pass every received message to the parser
-export const onMessageHandler = (currentMessages, authorsSeen) => {
-  return (target, context, msg, self) => {
-    // Ignore own messages
-    if (self) {
-      return
-    }
+export const onMessageHandler = (target, context, msg, self) => {
+  // Ignore own messages
+  if (self) {
+    return
+  }
 
-    // If enabled, respond to the person who mentioned you
-    if (
-      config.mentionResponse === 1 &&
-      msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
-    ) {
-      setTimeout(
-        () => sayInChannel(`@${context.username} ConcernDoge 👌`),
-        2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
-      )
-    }
+  const messageType = context['message-type']
+  const author = context.username
 
-    // Skip sub emotes
-    let emoteCodes = []
-    if (context.emotes)
-      emoteCodes = Object.keys(context.emotes).map((code) => +code)
+  authorsSeen = [...authorsSeen, author] // Gathering all authors so we can avoid whispering them unintentionally
 
-    // Skip URLs
-    const urlRegExp = new RegExp(urlRegex)
-    if (msg.match(urlRegExp)) return
-
-    authorsSeen.push(context.username) // Gathering all authors so we can avoid whispering them unintentionally
-
-    addMessage(
-      msg,
-      emoteCodes,
-      context['message-type'],
-      context.username,
-      currentMessages,
-      authorsSeen
+  // If enabled, respond to the person who mentioned you
+  if (
+    config.mentionResponse === 1 &&
+    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
+  ) {
+    setTimeout(
+      () => sayInChannel(`@${context.username} ConcernDoge 👌`),
+      2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
     )
   }
+
+  // Skip sub emotes
+  let emoteCodes = []
+  if (context.emotes)
+    emoteCodes = Object.keys(context.emotes).map((code) => +code)
+
+  // Skip URLs
+  const urlRegExp = new RegExp(urlRegex)
+  if (msg.match(urlRegExp)) return
+
+  // Skip if this author already posted something in the given interval
+  if (
+    currentMessages.some((currentMessage) => currentMessage.author === author)
+  )
+    return
+
+  addMessage(msg, emoteCodes, messageType, author)
 }
 
-const addMessage = (
-  msg,
-  emoteCodes,
-  messageType,
-  author,
-  currentMessages,
-  authorsSeen
-) => {
-  // If posting is not on cooldown and passes all conditions post it immediately if the score is high enough
-  if (
-    !isSubEmote(allowedEmotes, emoteCodes) &&
-    !checkIgnoredMessage(authorsSeen, msg) &&
-    !currentMessages
-      .filter(
-        (message) =>
-          Math.floor(Date.now()) - message.timestamp <= config.readInterval
-      )
-      .some((currentMessage) => currentMessage.author === author) && // Filter out authors who recently posted something
-    (Math.floor(Date.now()) - prevTimestamp > 30000 // If an identical message was sent 30s ago ignore the duplicates
-      ? true
-      : msg != prevMsg)
-  ) {
-    currentMessages.push({
+const addMessage = (msg, emoteCodes, messageType, author) => {
+  // Remove the messages past their time and add the new message
+  currentMessages = [
+    ...currentMessages.filter(
+      (message) =>
+        Math.floor(Date.now()) - message.timestamp <= config.readInterval
+    ),
+    {
       message: msg,
       messageType: messageType,
       author: author,
       timestamp: Math.floor(Date.now()),
-    })
+    },
+  ]
 
+  // If posting is not on cooldown and passes all conditions post it immediately if the score is high enough
+  if (
+    !messageCooldown &&
+    !isSubEmote(allowedEmotes, emoteCodes) &&
+    !checkIgnoredMessage(authorsSeen, msg) &&
+    (Math.floor(Date.now()) - prevTimestamp > 30000 // If an identical message was sent 30s ago ignore the duplicates
+      ? true
+      : msg != prevMsg)
+  ) {
     const score = calculateScore(msg, currentMessages)
 
-    if (!messageCooldown && score > config.repetitionThreshold) {
+    if (score > config.repetitionThreshold) {
       messageCooldown = true
 
-      const currentDate = new Date()
-      const currentDateFormatted = currentDate.toLocaleTimeString('pl-PL')
-      console.log(
-        `[${currentDateFormatted}, #${
-          config.channelName
-        }, score: ${score.toFixed(2)}]: ${msg}`
-      )
+      logMessage(msg, score)
 
       if (messageType === 'chat') sayInChannel(msg)
       else if (messageType === 'action') sayInChannel(`/me ${msg}`) // /me changes the message color to your nickname's color
@@ -100,9 +93,7 @@ const addMessage = (
       // Save current data for conditions in the next iteration
       prevTimestamp = Math.floor(Date.now())
       prevMsg = msg
-
-      // Clear without losing reference
-      currentMessages.length = 0
+      currentMessages = []
 
       setTimeout(() => {
         messageCooldown = false
@@ -114,26 +105,19 @@ const addMessage = (
 const calculateScore = (msg, currentMessages) => {
   let score = 0
 
-  currentMessages
-    .filter(
-      (message) =>
-        Math.floor(Date.now()) - message.timestamp <= config.readInterval
+  currentMessages.forEach((similarMsg) => {
+    const similarity = stringSimilarity.compareTwoStrings(
+      similarMsg.message,
+      msg
     )
-    .forEach((similarMsg) => {
-      const similarity = stringSimilarity.compareTwoStrings(
-        similarMsg.message,
-        msg
-      )
-      const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
-        getBaseSpam(similarMsg.message),
-        msg
-      )
+    const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
+      getBaseSpam(similarMsg.message),
+      msg
+    )
 
-      const finalSimilarity =
-        similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
-
-      score += finalSimilarity
-    })
+    // Pick better similarity from comparing both messages and comparing the message with the base of the other one (considering spam with repeating emotes for example)
+    score += similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
+  })
 
   return score
 }

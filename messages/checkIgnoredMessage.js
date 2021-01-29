@@ -12,7 +12,10 @@ export const checkIgnoredMessage = (authorsSeen, msg) => {
     ignoredWordsJson.ignoredWords.some((substring) =>
       msg.includes(substring)
     ) ||
-    authorsSeen.some((author) => msg.includes(author)) ||
+    // Convert the username and the message to lowercase since for example Chatterino autocompletes username in lowercase
+    authorsSeen.some((author) =>
+      msg.toLowerCase().includes(author.toLowerCase())
+    ) ||
     (msg.match(multispamRegexp) || []).length > 0
   )
 }
