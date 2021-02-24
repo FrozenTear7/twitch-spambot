@@ -27,4 +27,10 @@ const main = async () => {
   console.log('Starting the bot')
 }
 
+process.on('SIGINT', function () {
+  console.log('Bot shutting down FeelsOkayMan')
+  client.disconnect()
+  process.exit()
+})
+
 main()
