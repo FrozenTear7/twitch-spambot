@@ -56,6 +56,13 @@ export const onMessageHandler = (target, context, msg, self) => {
   addMessage(msg, emoteCodes, messageType, author)
 }
 
+const mapMessageToScores = (msg, currentMessages) => {
+  return {
+    message: msg,
+    score: calculateScore(msg, currentMessages),
+  }
+}
+
 const addMessage = (msg, emoteCodes, messageType, author) => {
   // Remove the messages past their time and add the new message
   currentMessages = [
@@ -80,19 +87,23 @@ const addMessage = (msg, emoteCodes, messageType, author) => {
       ? true
       : msg != prevMsg)
   ) {
-    const score = calculateScore(msg, currentMessages)
+    const scoredMessages = currentMessages
+      .map((x) => mapMessageToScores(x.message, currentMessages))
+      .sort((x) => x.score)
+    const bestMessage = scoredMessages[0]
 
-    if (score > config.repetitionThreshold) {
+    if (bestMessage.score > config.messageScore) {
       messageCooldown = true
 
-      logMessage(msg, score)
+      logMessage(bestMessage.message, bestMessage.score)
 
-      if (messageType === 'chat') sayInChannel(msg)
-      else if (messageType === 'action') sayInChannel(`/me ${msg}`) // /me changes the message color to your nickname's color
+      if (messageType === 'chat') sayInChannel(bestMessage.message)
+      else if (messageType === 'action')
+        sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
 
       // Save current data for conditions in the next iteration
       prevTimestamp = Math.floor(Date.now())
-      prevMsg = msg
+      prevMsg = bestMessage.message
       currentMessages = []
 
       setTimeout(() => {

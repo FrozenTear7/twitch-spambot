@@ -32,13 +32,13 @@ The program has 4 available arguments:
 - **channelName** (required) - channel to which we connect to
 - **readInterval**: default = 5000 _ms_ - the amount of time during which we gather channel messages and try to find the most popular spam
 - **sleepInterval**: default = 30000 _ms_ - duration of sleep after sending the message to the channel
-- **scoreThreshold**: default = 4 - score required for the most popular message to be sent
+- **messageScore**: default = 4 - score required for the most popular message to be sent
 - **mentionResponse**: default = 0 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `index.js` file in the `onMessageHandler` function)
 
 The arguments are passed as:
 
 ```bash
-npm start <channelName> <readInterval> <sleepInterval> <scoreThreshold> <mentionResponse>
+npm start <channelName> <readInterval> <sleepInterval> <messageScore> <mentionResponse>
 ```
 
 If you wish to omit a particular argument (except the `channelName`), just pass a Javascript _falsy_ value,
@@ -48,7 +48,7 @@ or an argument that is not a number, for example:
 npm start <channelName> - - 5 -
 ```
 
-which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `scoreThreshold` from 4 to 5.
+which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `messageScore` from 4 to 5.
 
 You can also just run:
 

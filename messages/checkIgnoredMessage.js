@@ -1,6 +1,6 @@
 import ignoredWordsJson from '../config/ignoredWords.json'
 
-const ignoreCharacters = ['!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
+const ignoreCharacters = ['+', '!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
 const multispamRegex = /^.+ (\d+|\d+\/\d+)\s*$/gi // For things like copypastas with counters 'copypasta 1', 'copypasta 2' or 'copypasta 2/5'
 
 export const checkIgnoredMessage = (authorsSeen, msg) => {

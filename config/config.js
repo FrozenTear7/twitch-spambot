@@ -18,7 +18,7 @@ const programArgs = process.argv.slice(2)
 const channelName = programArgs[0]
 const readInterval = +programArgs[1] || 3000 // in [ms]
 const sleepInterval = +programArgs[2] || 30000 // in [ms]
-const repetitionThreshold = +programArgs[3] || 4
+const messageScore = +programArgs[3] || 4
 const mentionResponse = +programArgs[4] || 0 // 0 - don't respond, 1 - respond with the default message to the sender
 
 if (!channelName) {
@@ -47,6 +47,6 @@ export default {
   clientOptions,
   readInterval,
   sleepInterval,
-  repetitionThreshold,
+  messageScore,
   mentionResponse,
 }
