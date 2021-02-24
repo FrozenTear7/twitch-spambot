@@ -5,12 +5,14 @@ import { getAllowedEmotes } from './messages/emoteUtils.js'
 import { onNoticeHandler } from './handlers/onNoticeHandler.js'
 import { onMessageHandler } from './handlers/onMessageHandler.js'
 
+// Export globally unchanged variables
 export let allowedEmotes = []
 export let client
 
 const main = async () => {
   client = new tmi.client(config.clientOptions)
 
+  // Fetch global and your whitelisted emotes
   console.log('Fetching all global emotes')
   allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
   console.log('Finished fetching global emotes')
@@ -27,6 +29,7 @@ const main = async () => {
   console.log('Starting the bot')
 }
 
+// Finish the script gracefully
 process.on('SIGINT', function () {
   console.log('Bot shutting down FeelsOkayMan')
   client.disconnect()

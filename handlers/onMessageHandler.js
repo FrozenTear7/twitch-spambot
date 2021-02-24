@@ -2,10 +2,11 @@ import stringSimilarity from 'string-similarity'
 import config from '../config/config.js'
 import { getBaseSpam } from '../messages/spamUtils.js'
 import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
-import { isSubEmote } from '../messages/emoteUtils.js'
+import { hasSubEmotes } from '../messages/emoteUtils.js'
 import { sayInChannel } from '../messages/sayInChannel.js'
 import { allowedEmotes } from '../index.js'
 import { logMessage } from '../utils/logMessage.js'
+import { postingCooldown } from '../utils/postingCooldown.js'
 
 const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 let messageCooldown = false
@@ -75,24 +76,24 @@ const addMessage = (msg, emoteCodes, messageType, author) => {
       messageType: messageType,
       author: author,
       timestamp: Math.floor(Date.now()),
+      emoteCodes: emoteCodes,
     },
   ]
 
-  // If posting is not on cooldown and passes all conditions post it immediately if the score is high enough
-  if (
-    !messageCooldown &&
-    !isSubEmote(allowedEmotes, emoteCodes) &&
-    !checkIgnoredMessage(authorsSeen, msg) &&
-    (Math.floor(Date.now()) - prevTimestamp > 30000 // If an identical message was sent 30s ago ignore the duplicates
-      ? true
-      : msg != prevMsg)
-  ) {
-    const scoredMessages = currentMessages
+  // If posting is not on cooldown
+  if (!messageCooldown) {
+    // Map messages to their scores and get the best one
+    const bestMessage = currentMessages
+      .filter(
+        (x) =>
+          !hasSubEmotes(allowedEmotes, x.emoteCodes) &&
+          !checkIgnoredMessage(authorsSeen, x.message) &&
+          postingCooldown(x.message, prevMsg, prevTimestamp)
+      )
       .map((x) => mapMessageToScores(x.message, currentMessages))
-      .sort((x) => x.score)
-    const bestMessage = scoredMessages[0]
+      .sort((x) => x.score)[0]
 
-    if (bestMessage.score > config.messageScore) {
+    if (bestMessage && bestMessage.score > config.messageScore) {
       messageCooldown = true
 
       logMessage(bestMessage.message, bestMessage.score)
