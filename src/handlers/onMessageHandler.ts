@@ -1,52 +1,59 @@
-import stringSimilarity from 'string-similarity'
-import config from '../config/config.js'
-import { getBaseSpam } from '../messages/spamUtils.js'
-import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
-import { hasSubEmotes } from '../messages/emoteUtils.js'
-import { sayInChannel } from '../messages/sayInChannel.js'
-import { allowedEmotes } from '../index.js'
-import { logMessage } from '../utils/logMessage.js'
-import { postingCooldown } from '../utils/postingCooldown.js'
+import { calculateScore } from './../utils/calculateScore'
+import { ChatUserstate } from 'tmi.js'
+import { urlRegex } from './../utils/constants'
+import { postingCooldown } from './../utils/postingCooldown'
+import { sayInChannel } from './../messages/sayInChannel'
+import { hasSubEmotes } from './../messages/emoteUtils'
+import { checkIgnoredMessage } from './../messages/checkIgnoredMessage'
+import { MessageData, MessageType } from './../types'
+import config from '../config'
+import { allowedEmotes } from '../index'
+import { logMessage } from '../utils/logMessage'
 
-const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 let messageCooldown = false
 let prevTimestamp = 0
-let prevMsg
+let prevMsg: string
 
-let currentMessages = []
-let authorsSeen = []
+let currentMessages: MessageData[] = []
+let authorsSeen: string[] = []
 
 // Pass every received message to the parser
-export const onMessageHandler = (target, context, msg, self) => {
+export const onMessageHandler = (
+  _target: string,
+  context: ChatUserstate,
+  msg: string,
+  self: boolean
+): void => {
   // Ignore own messages
   if (self) {
     return
   }
 
-  const messageType = context['message-type']
+  const messageType: MessageType = context['message-type']
   const author = context.username
 
-  authorsSeen = [...authorsSeen, author] // Gathering all authors so we can avoid whispering them unintentionally
+  if (author) authorsSeen = [...authorsSeen, author] // Gathering all authors so we can avoid whispering them unintentionally
 
   // If enabled, respond to the person who mentioned you
   if (
     config.mentionResponse === 1 &&
-    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
+    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase()) &&
+    author
   ) {
     setTimeout(
-      () => sayInChannel(`@${context.username} ConcernDoge 👌`),
+      () => sayInChannel(`@${author} ConcernDoge 👌`),
       2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
     )
   }
 
   // Skip sub emotes
-  let emoteCodes = []
-  if (context.emotes)
-    emoteCodes = Object.keys(context.emotes).map((code) => +code)
+  const emoteCodes: number[] = context.emotes
+    ? Object.keys(context.emotes).map((code) => +code)
+    : []
 
   // Skip URLs
   const urlRegExp = new RegExp(urlRegex)
-  if (msg.match(urlRegExp)) return
+  if (urlRegExp.exec(msg)) return
 
   // Skip if this author already posted something in the given interval
   if (
@@ -57,14 +64,12 @@ export const onMessageHandler = (target, context, msg, self) => {
   addMessage(msg, emoteCodes, messageType, author)
 }
 
-const mapMessageToScores = (msg, currentMessages) => {
-  return {
-    message: msg,
-    score: calculateScore(msg, currentMessages),
-  }
-}
-
-const addMessage = (msg, emoteCodes, messageType, author) => {
+const addMessage = (
+  msg: string,
+  emoteCodes: number[],
+  messageType: MessageType,
+  author?: string
+) => {
   // Remove the messages past their time and add the new message
   currentMessages = [
     ...currentMessages.filter(
@@ -114,22 +119,9 @@ const addMessage = (msg, emoteCodes, messageType, author) => {
   }
 }
 
-const calculateScore = (msg, currentMessages) => {
-  let score = 0
-
-  currentMessages.forEach((similarMsg) => {
-    const similarity = stringSimilarity.compareTwoStrings(
-      similarMsg.message,
-      msg
-    )
-    const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
-      getBaseSpam(similarMsg.message),
-      msg
-    )
-
-    // Pick better similarity from comparing both messages and comparing the message with the base of the other one (considering spam with repeating emotes for example)
-    score += similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
-  })
-
-  return score
+const mapMessageToScores = (msg: string, currentMessages: MessageData[]) => {
+  return {
+    message: msg,
+    score: calculateScore(msg, currentMessages),
+  }
 }

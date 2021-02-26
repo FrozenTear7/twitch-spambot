@@ -17,13 +17,53 @@ if we're not subbed.
 
 [_Node.js_](https://nodejs.org/) is required, the program was created with _v14.4.0_.
 
+_.env_ file is required to provide data for the api and the config.
+Create an _.env_ file consiting of values as shown below:
+
 ```bash
-npm install
+TWITCH_USERNAME=<twitch_username>
+CLIENT_TOKEN=<client_token>
+```
+
+Client token can be retrieved from [here](https://twitchapps.com/tmi/).
+
+### Release version
+
+If you're running a release downloaded from the [releases page](https://github.com/FrozenTear7/twitch-spambot/releases):
+
+```bash
+npm install --only=production
 
 npm start <channelName>
+# or
+npm start <channelName> 3000 30000 5
+```
 
-or
+### Master version
 
+Otherwise if you're running the current master build:
+
+```bash
+npm install
+```
+
+and then:
+
+- if you want to edit the code and made your own changes, run the TypeScript version
+
+```bash
+npm run dev <channelName>
+# or
+npm run dev <channelName> 3000 30000 5
+```
+
+- if you want to compile the TypeScript to pure JavaScript
+
+```bash
+npm run tsc # to make a build directory
+
+npm start <channelName>
+# or
 npm start <channelName> 3000 30000 5
 ```
 
@@ -33,7 +73,7 @@ The program has 4 available arguments:
 - **readInterval**: default = 5000 _ms_ - the amount of time during which we gather channel messages and try to find the most popular spam
 - **sleepInterval**: default = 30000 _ms_ - duration of sleep after sending the message to the channel
 - **messageScore**: default = 4 - score required for the most popular message to be sent
-- **mentionResponse**: default = 0 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `index.js` file in the `onMessageHandler` function)
+- **mentionResponse**: default = 0 (0 to disable the auto response, 1 to enable), when enabled results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message, with: _@username [ConcernDoge](https://betterttv.com/emotes/566c9f6365dbbdab32ec0532) 👌_ (if you don't like it just change it in the `src/handlers/onMessageHandler.js` file in the `onMessageHandler` function)
 
 The arguments are passed as:
 
@@ -41,7 +81,7 @@ The arguments are passed as:
 npm start <channelName> <readInterval> <sleepInterval> <messageScore> <mentionResponse>
 ```
 
-If you wish to omit a particular argument (except the `channelName`), just pass a Javascript _falsy_ value,
+If you wish to omit a particular argument (except the `channelName`), just pass a JavaScript _falsy_ value,
 or an argument that is not a number, for example:
 
 ```bash
@@ -65,16 +105,6 @@ You can also run multiple instances of the script at once by joining `npm start 
 npm start <channelName> & npm start <channelName2> & npm start <channelName3>
 ```
 
-_.env_ file is also required to provide data for the api and the config.
-Create an _.env_ file consiting of values as shown below:
-
-```bash
-TWITCH_USERNAME=<twitch_username>
-CLIENT_TOKEN=<client_token>
-```
-
-Client token can be retrieved from [here](https://twitchapps.com/tmi/).
-
 ## Additional ignored words
 
 You can add additional words to ignore (they will count towards message score, but will not be sent if they end up with the highest score).
@@ -85,7 +115,7 @@ My example cases were:
 - a streamer got banned, but people could still use his emotes, while they could not be fetched from the api
 - a 3rd party chat app (such as Chatterino for example), allows to easily whisper people without using the `@` character before their username, which is hard to filter out - constantly keeping the user list cached would take a lot of resources and requests in bigger chats, so you might want to ignore usernames that are often whispered to avoid unintentional pings
 
-To use this feature edit the json file called `ignoredWords.json` in the `utils` directory of the project, with structure as shown below:
+To use this feature edit the json file called `ignoredWords.json` in the `src/utils` directory of the project, with structure as shown below:
 
 ```javascript
 {
@@ -97,7 +127,7 @@ with an array of ignored words of your choice.
 
 ## Whitelist sub emotes
 
-If you're subscired to a streamer and want to user their emotes with this bot, add their channel ID to `whitelistEmotes.json` file in the `utils` directory.
+If you're subscired to a streamer and want to user their emotes with this bot, add their channel ID to `whitelistEmotes.json` file in the `src/utils` directory.
 
 Since it would be troublesome for many people to create their own credentials for Twitch API requests you have to add the ID instead of the channel to simplify the process.
 
@@ -111,3 +141,7 @@ After getting the channel ID paste it in as:
 ```
 
 Otherwise just leave the `channels` entry as an empty array.
+
+## Contributing
+
+Please review the [contributing guidelines](https://github.com/FrozenTear7/twitch-spambot/blob/master/CONTRIBUTING.md). We reserve the right to refuse a Pull Request if it does not meet the requirements.
