@@ -1,21 +1,26 @@
 import tmi from 'tmi.js'
-import config from './config/config.js'
 import whitelistEmotes from './config/whitelistEmotes.json'
-import { getAllowedEmotes } from './messages/emoteUtils.js'
-import { onNoticeHandler } from './handlers/onNoticeHandler.js'
-import { onMessageHandler } from './handlers/onMessageHandler.js'
+import { getAllowedEmotes } from './messages/emoteUtils'
+import { onNoticeHandler } from './handlers/onNoticeHandler'
+import { onMessageHandler } from './handlers/onMessageHandler'
+import config from './config/config'
 
 // Export globally unchanged variables
-export let allowedEmotes = []
-export let client
+export let allowedEmotes: number[] = []
+export let client: tmi.Client
 
 const main = async () => {
   client = new tmi.client(config.clientOptions)
 
   // Fetch global and your whitelisted emotes
-  console.log('Fetching all global emotes')
-  allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
-  console.log('Finished fetching global emotes')
+  try {
+    console.log('Fetching all global emotes')
+    allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
+    console.log('Finished fetching global emotes')
+  } catch (e) {
+    console.log(e)
+    process.exit(0)
+  }
 
   // Register handlers
   client.on('message', onMessageHandler)
@@ -25,7 +30,7 @@ const main = async () => {
   client.on('notice', onNoticeHandler)
 
   // Start the client
-  await client.connect().catch((e) => {
+  await client.connect().catch((_e) => {
     console.log('Bot shutting down, due to an authentication error')
     process.exit(0)
   })
@@ -33,7 +38,7 @@ const main = async () => {
 }
 
 // Finish the script gracefully
-process.on('SIGINT', function () {
+process.on('SIGINT', () => {
   console.log('Bot shutting down FeelsOkayMan')
   client.disconnect()
   process.exit()

@@ -1,7 +1,7 @@
-import config from '../config/config.js'
-import { client } from '../index.js'
+import config from '../config/config'
+import { client } from '../index'
 
-export const sayInChannel = (msg) => {
+export const sayInChannel = (msg: string) => {
   client
     .say(config.channelName, msg)
     .catch((e) => console.log(`Exception while printing to the channel: ${e}`))

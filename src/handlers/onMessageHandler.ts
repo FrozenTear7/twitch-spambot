@@ -1,32 +1,39 @@
+import { ChatUserstate } from 'tmi.js'
+import { urlRegex } from './../utils/constants'
+import { postingCooldown } from './../utils/postingCooldown'
+import { sayInChannel } from './../messages/sayInChannel'
+import { hasSubEmotes } from './../messages/emoteUtils'
+import { checkIgnoredMessage } from './../messages/checkIgnoredMessage'
+import { getBaseSpam } from './../messages/spamUtils'
 import stringSimilarity from 'string-similarity'
-import config from '../config/config.js'
-import { getBaseSpam } from '../messages/spamUtils.js'
-import { checkIgnoredMessage } from '../messages/checkIgnoredMessage.js'
-import { hasSubEmotes } from '../messages/emoteUtils.js'
-import { sayInChannel } from '../messages/sayInChannel.js'
-import { allowedEmotes } from '../index.js'
-import { logMessage } from '../utils/logMessage.js'
-import { postingCooldown } from '../utils/postingCooldown.js'
+import { MessageData, MessageType } from './../types'
+import config from '../config/config'
+import { allowedEmotes } from '../index'
+import { logMessage } from '../utils/logMessage'
 
-const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
 let messageCooldown = false
 let prevTimestamp = 0
-let prevMsg
+let prevMsg: string
 
-let currentMessages = []
-let authorsSeen = []
+let currentMessages: MessageData[] = []
+let authorsSeen: string[] = []
 
 // Pass every received message to the parser
-export const onMessageHandler = (target, context, msg, self) => {
+export const onMessageHandler = (
+  _target: string,
+  context: ChatUserstate,
+  msg: string,
+  self: boolean
+) => {
   // Ignore own messages
   if (self) {
     return
   }
 
-  const messageType = context['message-type']
+  const messageType: MessageType = context['message-type']
   const author = context.username
 
-  authorsSeen = [...authorsSeen, author] // Gathering all authors so we can avoid whispering them unintentionally
+  if (author) authorsSeen = [...authorsSeen, author] // Gathering all authors so we can avoid whispering them unintentionally
 
   // If enabled, respond to the person who mentioned you
   if (
@@ -40,9 +47,9 @@ export const onMessageHandler = (target, context, msg, self) => {
   }
 
   // Skip sub emotes
-  let emoteCodes = []
-  if (context.emotes)
-    emoteCodes = Object.keys(context.emotes).map((code) => +code)
+  let emoteCodes: number[] = context.emotes
+    ? Object.keys(context.emotes).map((code) => +code)
+    : []
 
   // Skip URLs
   const urlRegExp = new RegExp(urlRegex)
@@ -57,14 +64,19 @@ export const onMessageHandler = (target, context, msg, self) => {
   addMessage(msg, emoteCodes, messageType, author)
 }
 
-const mapMessageToScores = (msg, currentMessages) => {
+const mapMessageToScores = (msg: string, currentMessages: MessageData[]) => {
   return {
     message: msg,
     score: calculateScore(msg, currentMessages),
   }
 }
 
-const addMessage = (msg, emoteCodes, messageType, author) => {
+const addMessage = (
+  msg: string,
+  emoteCodes: number[],
+  messageType: MessageType,
+  author?: string
+) => {
   // Remove the messages past their time and add the new message
   currentMessages = [
     ...currentMessages.filter(
@@ -114,7 +126,7 @@ const addMessage = (msg, emoteCodes, messageType, author) => {
   }
 }
 
-const calculateScore = (msg, currentMessages) => {
+const calculateScore = (msg: string, currentMessages: MessageData[]) => {
   let score = 0
 
   currentMessages.forEach((similarMsg) => {

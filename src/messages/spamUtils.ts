@@ -1,7 +1,8 @@
 // Clean up the message from special characters before passing it to the RegExp
-const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const escapeRegExp = (stringToEscape: string) =>
+  stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-export const getBaseSpam = (msg, spamMinLength = 3) => {
+export const getBaseSpam = (msg: string, spamMinLength = 3) => {
   let result = ''
   let repetitions = 0
 

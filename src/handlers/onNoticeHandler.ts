@@ -1,4 +1,8 @@
-export const onNoticeHandler = (channel, noticeType, noticeMsg) => {
+export const onNoticeHandler = (
+  _channel: string,
+  noticeType: string,
+  noticeMsg: string
+) => {
   console.log(`Received notice: ${noticeType}`)
 
   switch (noticeType) {

@@ -1,6 +1,6 @@
-import config from '../config/config.js'
+import config from '../config/config'
 
-export const logMessage = (msg, score) => {
+export const logMessage = (msg: string, score: number) => {
   const currentDate = new Date()
   const currentDateFormatted = currentDate.toLocaleTimeString('pl-PL')
   console.log(
