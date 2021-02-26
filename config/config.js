@@ -6,7 +6,7 @@ dotenv.config({ silent: true })
 
 const { TWITCH_USERNAME, CLIENT_TOKEN } = process.env
 
-if (TWITCH_USERNAME === undefined || CLIENT_TOKEN === undefined) {
+if (!TWITCH_USERNAME || !CLIENT_TOKEN) {
   console.log('Please provide a valid .env config')
   process.exit(0)
 }
