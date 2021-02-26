@@ -11,5 +11,5 @@ export const isArray = (arg: unknown): boolean => {
 }
 
 export const exists = (arg: unknown): boolean => {
-  return typeof arg !== 'undefined' && arg !== null
+  return typeof arg === 'undefined' || arg === null
 }
