@@ -34,7 +34,8 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "start": "node build/src/index.js",
+    "start": "node src/index.js",
+    "start-dev": "node build/src/index.js",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts . --fix"
   },
