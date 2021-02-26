@@ -32,11 +32,11 @@ Client token can be retrieved from [here](https://twitchapps.com/tmi/).
 If you're running a release downloaded from the [releases page](https://github.com/FrozenTear7/twitch-spambot/releases):
 
 ```bash
-npm install --only=production
+yarn --production
 
-npm start <channelName>
+yarn start <channelName>
 # or
-npm start <channelName> 3000 30000 5
+yarn start <channelName> 3000 30000 5
 ```
 
 ### Master version
@@ -44,7 +44,7 @@ npm start <channelName> 3000 30000 5
 Otherwise if you're running the current master build:
 
 ```bash
-npm install
+yarn
 ```
 
 and then:
@@ -52,19 +52,19 @@ and then:
 - if you want to edit the code and made your own changes, run the TypeScript version
 
 ```bash
-npm run dev <channelName>
+yarn run dev <channelName>
 # or
-npm run dev <channelName> 3000 30000 5
+yarn run dev <channelName> 3000 30000 5
 ```
 
 - if you want to compile the TypeScript to pure JavaScript
 
 ```bash
-npm run tsc # to make a build directory
+yarn run tsc # to make a build directory
 
-npm start <channelName>
+yarn start <channelName>
 # or
-npm start <channelName> 3000 30000 5
+yarn start <channelName> 3000 30000 5
 ```
 
 The program has 4 available arguments:
@@ -78,14 +78,14 @@ The program has 4 available arguments:
 The arguments are passed as:
 
 ```bash
-npm start <channelName> <readInterval> <sleepInterval> <messageScore> <mentionResponse>
+yarn start <channelName> <readInterval> <sleepInterval> <messageScore> <mentionResponse>
 ```
 
 If you wish to omit a particular argument (except the `channelName`), just pass a JavaScript _falsy_ value,
 or an argument that is not a number, for example:
 
 ```bash
-npm start <channelName> - - 5 -
+yarn start <channelName> - - 5 -
 ```
 
 which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `messageScore` from 4 to 5.
@@ -93,16 +93,16 @@ which will result in running the script with default values for `readInterval`, 
 You can also just run:
 
 ```bash
-npm start <channelName>
+yarn start <channelName>
 ```
 
 to run the program with the default arguments.
 Adjust the arguments to match the desired channel's chat speed and activity.
 
-You can also run multiple instances of the script at once by joining `npm start <channelName>` commands with `&` like:
+You can also run multiple instances of the script at once by joining `yarn start <channelName>` commands with `&` like:
 
 ```bash
-npm start <channelName> & npm start <channelName2> & npm start <channelName3>
+yarn start <channelName> & yarn start <channelName2> & yarn start <channelName3>
 ```
 
 ## Additional ignored words
