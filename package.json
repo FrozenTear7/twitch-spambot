@@ -5,7 +5,6 @@
   "private": true,
   "author": "Paweł Mendroch",
   "license": "MIT",
-  "type": "module",
   "main": "index.js",
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -20,6 +19,7 @@
     "@types/request": "^2.48.5",
     "@types/string-similarity": "^4.0.0",
     "@types/tmi.js": "^1.7.1",
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
     "eslint": "^6.8.0",
     "eslint-config-node": "^4.1.0",
     "eslint-config-prettier": "^6.15.0",
@@ -34,9 +34,9 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "start": "node --es-module-specifier-resolution=node build/index.js",
+    "start": "node build/src/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts . --fix"
   },
   "husky": {
     "hooks": {

@@ -1,9 +1,9 @@
 import tmi from 'tmi.js'
-import whitelistEmotes from './config/whitelistEmotes.json'
+import whitelistEmotes from '../config/whitelistEmotes.json'
 import { getAllowedEmotes } from './messages/emoteUtils'
 import { onNoticeHandler } from './handlers/onNoticeHandler'
 import { onMessageHandler } from './handlers/onMessageHandler'
-import config from './config/config'
+import config from './config'
 
 // Export globally unchanged variables
 export let allowedEmotes: number[] = []
@@ -40,8 +40,8 @@ const main = async () => {
 // Finish the script gracefully
 process.on('SIGINT', () => {
   console.log('Bot shutting down FeelsOkayMan')
-  client.disconnect()
+  void client.disconnect()
   process.exit()
 })
 
-main()
+void main()

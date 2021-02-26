@@ -2,7 +2,7 @@
 const escapeRegExp = (stringToEscape: string) =>
   stringToEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-export const getBaseSpam = (msg: string, spamMinLength = 3) => {
+export const getBaseSpam = (msg: string, spamMinLength = 3): string => {
   let result = ''
   let repetitions = 0
 
@@ -11,7 +11,7 @@ export const getBaseSpam = (msg: string, spamMinLength = 3) => {
       const msgSubstring = msg.substring(0, i)
 
       const substringRegexp = new RegExp(escapeRegExp(msgSubstring), 'g')
-      const regexMatch = msg.match(substringRegexp)
+      const regexMatch = substringRegexp.exec(msg)
       const countOccurences = (regexMatch || []).length
 
       if (countOccurences > repetitions) {
@@ -22,7 +22,7 @@ export const getBaseSpam = (msg: string, spamMinLength = 3) => {
       }
     }
   } catch (e) {
-    console.log(`getBaseSpam for: ${msg} threw an exception: ${e}`)
+    console.log(`getBaseSpam for: ${msg} threw an exception: ${e as string}`)
     return ''
   }
 

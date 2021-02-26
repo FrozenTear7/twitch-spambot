@@ -1,13 +1,12 @@
+import { calculateScore } from './../utils/calculateScore'
 import { ChatUserstate } from 'tmi.js'
 import { urlRegex } from './../utils/constants'
 import { postingCooldown } from './../utils/postingCooldown'
 import { sayInChannel } from './../messages/sayInChannel'
 import { hasSubEmotes } from './../messages/emoteUtils'
 import { checkIgnoredMessage } from './../messages/checkIgnoredMessage'
-import { getBaseSpam } from './../messages/spamUtils'
-import stringSimilarity from 'string-similarity'
 import { MessageData, MessageType } from './../types'
-import config from '../config/config'
+import config from '../config'
 import { allowedEmotes } from '../index'
 import { logMessage } from '../utils/logMessage'
 
@@ -24,7 +23,7 @@ export const onMessageHandler = (
   context: ChatUserstate,
   msg: string,
   self: boolean
-) => {
+): void => {
   // Ignore own messages
   if (self) {
     return
@@ -38,22 +37,23 @@ export const onMessageHandler = (
   // If enabled, respond to the person who mentioned you
   if (
     config.mentionResponse === 1 &&
-    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase())
+    msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase()) &&
+    author
   ) {
     setTimeout(
-      () => sayInChannel(`@${context.username} ConcernDoge 👌`),
+      () => sayInChannel(`@${author} ConcernDoge 👌`),
       2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
     )
   }
 
   // Skip sub emotes
-  let emoteCodes: number[] = context.emotes
+  const emoteCodes: number[] = context.emotes
     ? Object.keys(context.emotes).map((code) => +code)
     : []
 
   // Skip URLs
   const urlRegExp = new RegExp(urlRegex)
-  if (msg.match(urlRegExp)) return
+  if (urlRegExp.exec(msg)) return
 
   // Skip if this author already posted something in the given interval
   if (
@@ -62,13 +62,6 @@ export const onMessageHandler = (
     return
 
   addMessage(msg, emoteCodes, messageType, author)
-}
-
-const mapMessageToScores = (msg: string, currentMessages: MessageData[]) => {
-  return {
-    message: msg,
-    score: calculateScore(msg, currentMessages),
-  }
 }
 
 const addMessage = (
@@ -126,22 +119,9 @@ const addMessage = (
   }
 }
 
-const calculateScore = (msg: string, currentMessages: MessageData[]) => {
-  let score = 0
-
-  currentMessages.forEach((similarMsg) => {
-    const similarity = stringSimilarity.compareTwoStrings(
-      similarMsg.message,
-      msg
-    )
-    const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
-      getBaseSpam(similarMsg.message),
-      msg
-    )
-
-    // Pick better similarity from comparing both messages and comparing the message with the base of the other one (considering spam with repeating emotes for example)
-    score += similarity > baseSpamSimilarity ? similarity : baseSpamSimilarity
-  })
-
-  return score
+const mapMessageToScores = (msg: string, currentMessages: MessageData[]) => {
+  return {
+    message: msg,
+    score: calculateScore(msg, currentMessages),
+  }
 }

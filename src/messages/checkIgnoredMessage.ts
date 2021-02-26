@@ -1,7 +1,10 @@
 import { ignoreCharacters, multispamRegex } from './../utils/constants'
-import ignoredWordsJson from '../config/ignoredWords.json'
+import ignoredWordsJson from '../../config/ignoredWords.json'
 
-export const checkIgnoredMessage = (authorsSeen: string[], msg: string) => {
+export const checkIgnoredMessage = (
+  authorsSeen: string[],
+  msg: string
+): boolean => {
   const multispamRegexp = new RegExp(multispamRegex)
 
   // Skip commands, user whispers and messages containing ignored words from ./config/ignoredWords.json
@@ -14,6 +17,6 @@ export const checkIgnoredMessage = (authorsSeen: string[], msg: string) => {
     authorsSeen.some((author) =>
       msg.toLowerCase().includes(author.toLowerCase())
     ) ||
-    (msg.match(multispamRegexp) || []).length > 0
+    (multispamRegexp.exec(msg) || []).length > 0
   )
 }
