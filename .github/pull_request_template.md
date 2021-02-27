@@ -1,11 +1,3 @@
----
-name: Pull request
-about: Add new features or fix existing bugs
-title: 'Title of the PR'
-reviewers: FrozenTear7
-assignees: FrozenTear7
----
-
 **Description**
 Clear description of new features or fixes.
 
