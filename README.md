@@ -1,5 +1,12 @@
 # twitch-spambot
 
+[![buddy pipeline](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651/badge.svg?token=67c90bad49816f04938626247f8b89bb1bbf782b583b5fc4b78a863b0d4d18df 'buddy pipeline')](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FrozenTear7/twitch-spambot)
+![GitHub Release Date](https://img.shields.io/github/release-date/FrozenTear7/twitch-spambot)
+![GitHub](https://img.shields.io/github/license/FrozenTear7/twitch-spambot)
+![GitHub issues](https://img.shields.io/github/issues-raw/FrozenTear7/twitch-spambot)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/FrozenTear7/twitch-spambot)
+
 ### An automated twitch spammer
 
 ## Idea
@@ -32,7 +39,7 @@ Client token can be retrieved from [here](https://twitchapps.com/tmi/).
 If you're running a release downloaded from the [releases page](https://github.com/FrozenTear7/twitch-spambot/releases):
 
 ```bash
-yarn --production
+yarn install --production
 
 yarn start <channelName>
 # or
@@ -44,7 +51,7 @@ yarn start <channelName> 3000 30000 5
 Otherwise if you're running the current master build:
 
 ```bash
-yarn
+yarn install
 ```
 
 and then:
