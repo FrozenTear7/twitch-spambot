@@ -18,7 +18,7 @@ const main = async () => {
     allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
     console.log('Finished fetching global emotes')
   } catch (e) {
-    console.log(e)
+    console.log((e as Error).message)
     process.exit(0)
   }
 

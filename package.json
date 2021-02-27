@@ -47,8 +47,8 @@
     "start": "node src/index.js",
     "start-dev": "node build/src/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "test": "jest --passWithNoTests",
-    "test-coverage": "jest --passWithNoTests --silent --coverage",
+    "test": "jest --passWithNoTests --no-cache",
+    "test-coverage": "jest --passWithNoTests --no-cache --silent --coverage",
     "lint": "eslint --ext .ts . --fix"
   },
   "husky": {
@@ -57,6 +57,9 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,mjs}": "eslint --cache --fix"
+    "*.{js,jsx,mjs,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

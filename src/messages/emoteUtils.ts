@@ -1,39 +1,5 @@
-import { emotesURI } from './../utils/constants'
-import { isString } from './../utils/parseTypes/typeChecks'
-import { doRequest } from '../utils/doRequest'
-import toChannelInfo from '../utils/parseTypes/toChannelInfo'
-
-const fetchGlobalEmotes = async () => {
-  const res = await doRequest(`${emotesURI}/0`)
-
-  if (isString(res)) {
-    const resJson = toChannelInfo(JSON.parse(res))
-    return resJson.emotes.map((emote) => emote.id)
-  } else {
-    throw Error('Could not fetch global emotes')
-  }
-}
-
-const fetchWhitelistedEmotes = async (channels: string[]) => {
-  let result: number[] = []
-
-  if (channels.length > 0) {
-    for (const channelId of channels) {
-      const res = await doRequest(`${emotesURI}/${channelId}`)
-
-      if (isString(res)) {
-        const resJson = toChannelInfo(JSON.parse(res))
-        result = [...result, ...resJson.emotes.map((emote) => emote.id)]
-      } else {
-        throw Error(
-          `Could not fetch whitelisted emotes for channel: ${channelId}`
-        )
-      }
-    }
-  }
-
-  return result
-}
+import { fetchWhitelistedEmotes } from './fetchWhitelistedEmotes'
+import { fetchGlobalEmotes } from './fetchGlobalEmotes'
 
 // Allow all global Twitch emotes available for everyone and the channels you're subbed to (from whitelistEmotes.json)
 export const getAllowedEmotes = async (

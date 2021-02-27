@@ -27,8 +27,7 @@ describe('getBaseSpam', () => {
 
   test('message too short returns itself', () => {
     const msg = 'tt'
-    const expectedOutput = 'tt'
 
-    expect(getBaseSpam(msg)).toBe(expectedOutput)
+    expect(getBaseSpam(msg)).toBe(msg)
   })
 })
