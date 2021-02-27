@@ -17,6 +17,6 @@ export const checkIgnoredMessage = (
     authorsSeen.some((author) =>
       msg.toLowerCase().includes(author.toLowerCase())
     ) ||
-    (multispamRegexp.exec(msg) || []).length > 0
+    (msg.match(multispamRegexp) || []).length > 0
   )
 }

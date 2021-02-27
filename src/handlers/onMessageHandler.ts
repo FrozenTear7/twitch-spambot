@@ -53,7 +53,7 @@ export const onMessageHandler = (
 
   // Skip URLs
   const urlRegExp = new RegExp(urlRegex)
-  if (urlRegExp.exec(msg)) return
+  if (msg.match(urlRegExp)) return
 
   // Skip if this author already posted something in the given interval
   if (
