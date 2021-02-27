@@ -5,6 +5,10 @@ import {
   exists,
 } from './../../../../src/utils/parseTypes/typeChecks'
 
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
 describe('isString', () => {
   test('string returns true', () => {
     const valuesToTest = ['test', String('test'), String(1)]
@@ -64,7 +68,7 @@ describe('exists', () => {
     const valuesToTest = [null, undefined]
 
     valuesToTest.forEach((valueToTest) =>
-      expect(exists(valueToTest)).toBe(true)
+      expect(exists(valueToTest)).toBe(false)
     )
   })
 
@@ -82,7 +86,7 @@ describe('exists', () => {
     ]
 
     valuesToTest.forEach((valueToTest) =>
-      expect(exists(valueToTest)).toBe(false)
+      expect(exists(valueToTest)).toBe(true)
     )
   })
 })

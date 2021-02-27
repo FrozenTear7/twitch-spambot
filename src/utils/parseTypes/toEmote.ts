@@ -23,7 +23,7 @@ const parseCode = (code: any): string => {
 
 const parseEmoticonSet = (emoticonSet: any): number => {
   if (!exists(emoticonSet) || !isNumber(emoticonSet)) {
-    throw new Error('Incorrect or missing parameter: emoticonSet')
+    throw new Error('Incorrect or missing parameter: emoticon_set')
   }
   return emoticonSet
 }

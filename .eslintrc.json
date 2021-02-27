@@ -16,6 +16,7 @@
       { "argsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-explicit-any": 1,
+    "@typescript-eslint/prefer-regexp-exec": 0,
     "no-case-declarations": 0,
     "prettier/prettier": [
       "error",
