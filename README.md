@@ -3,6 +3,7 @@
 ![Automated by Buddy](https://assets.buddy.works/automated-dark.svg)
 
 [![buddy pipeline](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651/badge.svg?token=67c90bad49816f04938626247f8b89bb1bbf782b583b5fc4b78a863b0d4d18df 'buddy pipeline')](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651)
+![Coverage](./badges/badge-statements.svg)
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FrozenTear7/twitch-spambot)
 ![GitHub Release Date](https://img.shields.io/github/release-date/FrozenTear7/twitch-spambot)
