@@ -1,7 +1,6 @@
-import { isString } from './../utils/parseTypes/typeChecks'
 import { emotesURI } from './../utils/constants'
 import toChannelInfo from '../utils/parseTypes/toChannelInfo'
-import { doRequest } from './../utils/doRequest'
+import axios from 'axios'
 
 export const fetchWhitelistedEmotes = async (
   channels: string[]
@@ -10,10 +9,10 @@ export const fetchWhitelistedEmotes = async (
 
   if (channels.length > 0) {
     for (const channelId of channels) {
-      const res = await doRequest(`${emotesURI}/${channelId}`)
+      const res = await axios.get(`${emotesURI}/${channelId}`)
 
-      if (isString(res)) {
-        const resJson = toChannelInfo(JSON.parse(res))
+      if (res.data) {
+        const resJson = toChannelInfo(res.data)
         result = [...result, ...resJson.emotes.map((emote) => emote.id)]
       } else {
         throw Error(

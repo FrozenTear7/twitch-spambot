@@ -1,13 +1,12 @@
-import { isString } from './../utils/parseTypes/typeChecks'
 import { emotesURI } from './../utils/constants'
-import { doRequest } from '../utils/doRequest'
 import toChannelInfo from '../utils/parseTypes/toChannelInfo'
+import axios from 'axios'
 
 export const fetchGlobalEmotes = async (): Promise<number[]> | never => {
-  const res = await doRequest(`${emotesURI}/0`)
+  const res = await axios.get(`${emotesURI}/0`)
 
-  if (isString(res)) {
-    const resJson = toChannelInfo(JSON.parse(res))
+  if (res.data) {
+    const resJson = toChannelInfo(res.data)
     return resJson.emotes.map((emote) => emote.id)
   } else {
     throw Error('Could not fetch global emotes')
