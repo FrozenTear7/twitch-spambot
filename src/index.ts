@@ -36,15 +36,20 @@ const main = async () => {
     console.log('Bot shutting down, due to an authentication error')
     process.exit(0)
   }
-
-  console.log('Starting the bot')
 }
 
 // Finish the script gracefully
 process.on('SIGINT', () => {
   console.log('Bot shutting down FeelsOkayMan')
   void client.disconnect()
-  process.exit()
+  process.exit(0)
 })
 
-void main()
+main().then(
+  () => {
+    console.log('Starting the bot')
+  },
+  (e) => {
+    console.log(`An exception occured at top level: ${(e as Error).message}`)
+  }
+)
