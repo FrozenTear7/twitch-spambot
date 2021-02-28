@@ -8,7 +8,7 @@ import axios from 'axios'
 jest.mock('axios')
 jest.mock('../../../src/utils/parseTypes/toChannelInfo')
 
-describe('fetchGlobalEmotes', () => {
+describe('fetchEmotes', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })

@@ -7,7 +7,7 @@ jest.mock('./../../../src/messages/spamUtils', () => ({
   getBaseSpam: jest.fn().mockReturnValue('getBaseSpam test'),
 }))
 
-describe('checkIgnoredMessage', () => {
+describe('calculateScore', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })

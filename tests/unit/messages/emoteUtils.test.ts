@@ -10,7 +10,7 @@ import { mocked } from 'ts-jest/utils'
 jest.mock('./../../../src/messages/fetchEmotes')
 jest.mock('./../../../src/messages/fetchWhitelistedEmotes')
 
-describe('logMessage', () => {
+describe('emoteUtils', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
