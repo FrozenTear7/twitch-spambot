@@ -57,13 +57,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && yarn test:badges && git add ./badges"
     }
   },
   "lint-staged": {
     "*.{js,jsx,mjs,ts,tsx}": [
       "eslint --fix",
-      "git add"
+      "git add ."
     ]
   }
 }
