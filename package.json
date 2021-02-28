@@ -49,8 +49,8 @@
     "start": "node src/index.js",
     "start:dev": "node build/src/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "test": "jest --passWithNoTests --no-cache",
-    "test:coverage": "jest --passWithNoTests --no-cache --silent --coverage",
+    "test": "jest --passWithNoTests --no-cache --coverage",
+    "test:coverage": "jest --passWithNoTests --no-cache --silent --coverage --collectCoverageFrom=src/**/*.ts",
     "test:badges": "yarn test:coverage && jest-coverage-badges --input ./coverage/coverage-summary.json --output ./badges",
     "lint": "eslint --ext .ts . --fix"
   },

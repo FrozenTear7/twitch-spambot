@@ -41,7 +41,7 @@ export const onMessageHandler = (
     author
   ) {
     setTimeout(
-      () => sayInChannel(`@${author} ConcernDoge 👌`),
+      () => void sayInChannel(`@${author} ConcernDoge 👌`),
       2000 + Math.floor(Math.random() * 2001) // Act like a human and randomize the response time
     )
   }
@@ -103,9 +103,9 @@ const addMessage = (
 
       logMessage(bestMessage.message, bestMessage.score)
 
-      if (messageType === 'chat') sayInChannel(bestMessage.message)
+      if (messageType === 'chat') void sayInChannel(bestMessage.message)
       else if (messageType === 'action')
-        sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
+        void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
 
       // Save current data for conditions in the next iteration
       prevTimestamp = Math.floor(Date.now())

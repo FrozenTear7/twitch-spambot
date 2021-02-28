@@ -4,6 +4,7 @@
 describe('config', () => {
   beforeEach(() => {
     jest.resetModules()
+    jest.clearAllMocks()
   })
 
   test('exits on missing .env TWITCH_USERNAME and CLIENT_TOKEN', () => {
