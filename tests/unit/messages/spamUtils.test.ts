@@ -1,10 +1,6 @@
 import { getBaseSpam } from '../../../src/messages/spamUtils'
 
 describe('getBaseSpam', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('leaves base spam as is', () => {
     const msg = 'test'
 

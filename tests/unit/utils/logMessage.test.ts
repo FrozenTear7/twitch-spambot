@@ -5,10 +5,6 @@ import config from '../../../src/config'
 jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 
 describe('logMessage', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('print correct output to the console', () => {
     const channelName = 'testChannel'
     const msg = 'test message'
@@ -22,7 +18,7 @@ describe('logMessage', () => {
 
     logMessage(msg, score)
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
+    expect(logSpy).toBeCalledTimes(1)
     expect(logSpy).toHaveBeenCalledWith(
       `[${currentDateFormatted}, #${channelName}, score: ${score.toFixed(
         2

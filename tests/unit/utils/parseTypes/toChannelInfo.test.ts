@@ -1,10 +1,6 @@
 import toChannelInfo from '../../../../src/utils/parseTypes/toChannelInfo'
 
 describe('toChannelInfo', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('properly parses an Emote', () => {
     const channelInfo = {
       emotes: [

@@ -8,10 +8,6 @@ jest.mock('./../../../src/messages/spamUtils', () => ({
 }))
 
 describe('calculateScore', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('returns valid score for existing currentMessages', () => {
     const msg = 'test'
     const currentMessages: MessageData[] = [

@@ -10,7 +10,6 @@ import config from '../config'
 import { allowedEmotes } from '../index'
 import { logMessage } from '../utils/logMessage'
 
-let messageCooldown = false
 let prevTimestamp = 0
 let prevMsg: string
 
@@ -85,37 +84,29 @@ const addMessage = (
     },
   ]
 
-  // If posting is not on cooldown
-  if (!messageCooldown) {
-    // Map messages to their scores and get the best one
-    const bestMessage = currentMessages
-      .filter(
-        (x) =>
-          !hasSubEmotes(allowedEmotes, x.emoteCodes) &&
-          !checkIgnoredMessage(authorsSeen, x.message) &&
-          postingCooldown(x.message, prevMsg, prevTimestamp)
-      )
-      .map((x) => mapMessageToScores(x.message, currentMessages))
-      .sort((x) => x.score)[0]
+  // Map messages to their scores and get the best one
+  const bestMessage = currentMessages
+    .filter(
+      (x) =>
+        !hasSubEmotes(allowedEmotes, x.emoteCodes) &&
+        !checkIgnoredMessage(authorsSeen, x.message) &&
+        postingCooldown(x.message, prevMsg, prevTimestamp) &&
+        x.timestamp - prevTimestamp > config.sleepInterval
+    )
+    .map((x) => mapMessageToScores(x.message, currentMessages))
+    .sort((x) => x.score)[0]
 
-    if (bestMessage && bestMessage.score > config.messageScore) {
-      messageCooldown = true
+  if (bestMessage && bestMessage.score > config.messageScore) {
+    logMessage(bestMessage.message, bestMessage.score)
 
-      logMessage(bestMessage.message, bestMessage.score)
+    if (messageType === 'chat') void sayInChannel(bestMessage.message)
+    else if (messageType === 'action')
+      void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
 
-      if (messageType === 'chat') void sayInChannel(bestMessage.message)
-      else if (messageType === 'action')
-        void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
-
-      // Save current data for conditions in the next iteration
-      prevTimestamp = Math.floor(Date.now())
-      prevMsg = bestMessage.message
-      currentMessages = []
-
-      setTimeout(() => {
-        messageCooldown = false
-      }, config.sleepInterval)
-    }
+    // Save current data for conditions in the next iteration
+    prevTimestamp = Math.floor(Date.now())
+    prevMsg = bestMessage.message
+    currentMessages = []
   }
 }
 

@@ -30,10 +30,13 @@ const main = async () => {
   client.on('notice', onNoticeHandler)
 
   // Start the client
-  await client.connect().catch((_e) => {
+  try {
+    await client.connect()
+  } catch (_e) {
     console.log('Bot shutting down, due to an authentication error')
     process.exit(0)
-  })
+  }
+
   console.log('Starting the bot')
 }
 

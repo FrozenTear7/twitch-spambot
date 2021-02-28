@@ -5,10 +5,6 @@ import { mocked } from 'ts-jest/utils'
 jest.mock('../../../src/messages/fetchEmotes')
 
 describe('fetchWhitelistedEmotes', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('returns empty result for no channels', async () => {
     const channels: string[] = []
     const expectedResult: number[] = []

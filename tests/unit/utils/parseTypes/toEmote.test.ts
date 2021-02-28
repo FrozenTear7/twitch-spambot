@@ -1,10 +1,6 @@
 import toEmote from '../../../../src/utils/parseTypes/toEmote'
 
 describe('toEmote', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('properly parses an Emote', () => {
     const emote = {
       code: 'test',

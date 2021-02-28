@@ -1,10 +1,6 @@
 import { postingCooldown } from '../../../src/utils/postingCooldown'
 
 describe('postingCooldown', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('return true for same messages in cooldown', () => {
     const msg = 'same message'
     const prevMsg = 'same message'

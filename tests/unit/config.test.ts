@@ -4,7 +4,6 @@
 describe('config', () => {
   beforeEach(() => {
     jest.resetModules()
-    jest.clearAllMocks()
   })
 
   test('exits on missing .env TWITCH_USERNAME and CLIENT_TOKEN', () => {
@@ -28,11 +27,11 @@ describe('config', () => {
       expect((e as Error).message).toBe(exitMsg)
     }
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith('Please provide a valid .env config')
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a valid .env config')
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
-    expect(exitSpy).toHaveBeenCalledWith(0)
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
 
     // CLIENT_TOKEN check
 
@@ -45,11 +44,11 @@ describe('config', () => {
       expect((e as Error).message).toBe(exitMsg)
     }
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith('Please provide a valid .env config')
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a valid .env config')
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
-    expect(exitSpy).toHaveBeenCalledWith(0)
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
 
     process.env = OLD_ENV
   })
@@ -143,11 +142,11 @@ describe('config', () => {
       expect((e as Error).message).toBe(exitMsg)
     }
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith('Please provide a channel name')
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a channel name')
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
-    expect(exitSpy).toHaveBeenCalledWith(0)
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
   })
 
   test('exits on missing channelName', () => {
@@ -165,12 +164,12 @@ describe('config', () => {
       expect((e as Error).message).toBe(exitMsg)
     }
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith(
       'Please provide a valid mentionResponse value'
     )
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
-    expect(exitSpy).toHaveBeenCalledWith(0)
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
   })
 })

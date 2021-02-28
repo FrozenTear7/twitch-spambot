@@ -1,10 +1,6 @@
 import { onNoticeHandler } from './../../../src/handlers/onNoticeHandler'
 
 describe('onNoticeHandler', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   const channel = 'test'
   const noticeMsg = 'test'
 
@@ -28,15 +24,13 @@ describe('onNoticeHandler', () => {
         expect((e as Error).message).toBe(exitMsg)
       }
 
-      expect(logSpy).toHaveBeenCalledWith(`Received notice: ${valueToTest}`)
-      expect(logSpy).toHaveBeenCalledWith(
-        `Exception during execution: ${noticeMsg}`
-      )
-      expect(exitSpy).toHaveBeenCalledWith(0)
+      expect(logSpy).toBeCalledWith(`Received notice: ${valueToTest}`)
+      expect(logSpy).toBeCalledWith(`Exception during execution: ${noticeMsg}`)
+      expect(exitSpy).toBeCalledWith(0)
     })
 
-    expect(logSpy).toHaveBeenCalledTimes(2 * valuesToTest.length)
-    expect(exitSpy).toHaveBeenCalledTimes(1 * valuesToTest.length)
+    expect(logSpy).toBeCalledTimes(2 * valuesToTest.length)
+    expect(exitSpy).toBeCalledTimes(1 * valuesToTest.length)
   })
 
   test('posting obstructed', () => {
@@ -52,11 +46,11 @@ describe('onNoticeHandler', () => {
     valuesToTest.forEach((valueToTest) => {
       onNoticeHandler(channel, valueToTest, noticeMsg)
 
-      expect(logSpy).toHaveBeenCalledWith(`Received notice: ${valueToTest}`)
-      expect(logSpy).toHaveBeenCalledWith(noticeMsg)
+      expect(logSpy).toBeCalledWith(`Received notice: ${valueToTest}`)
+      expect(logSpy).toBeCalledWith(noticeMsg)
     })
 
-    expect(logSpy).toHaveBeenCalledTimes(2 * valuesToTest.length)
+    expect(logSpy).toBeCalledTimes(2 * valuesToTest.length)
   })
 
   test('host offline', () => {
@@ -74,12 +68,12 @@ describe('onNoticeHandler', () => {
       expect((e as Error).message).toBe(exitMsg)
     }
 
-    expect(logSpy).toHaveBeenCalledTimes(2)
-    expect(logSpy).toHaveBeenCalledWith(`Received notice: ${noticeType}`)
-    expect(logSpy).toHaveBeenCalledWith('Stream ended, stopping the spam')
+    expect(logSpy).toBeCalledTimes(2)
+    expect(logSpy).toBeCalledWith(`Received notice: ${noticeType}`)
+    expect(logSpy).toBeCalledWith('Stream ended, stopping the spam')
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
-    expect(exitSpy).toHaveBeenCalledWith(0)
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
   })
 
   test('different_notice', () => {
@@ -89,12 +83,12 @@ describe('onNoticeHandler', () => {
 
     onNoticeHandler(channel, noticeType, noticeMsg)
 
-    expect(logSpy).toHaveBeenCalledTimes(3)
-    expect(logSpy).toHaveBeenCalledWith(`Received notice: ${noticeType}`)
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logSpy).toBeCalledTimes(3)
+    expect(logSpy).toBeCalledWith(`Received notice: ${noticeType}`)
+    expect(logSpy).toBeCalledWith(
       `Unhandled notice of type: ${noticeType} - ${noticeMsg}`
     )
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logSpy).toBeCalledWith(
       'Address this in the Issues on Github if something important breaks here'
     )
   })

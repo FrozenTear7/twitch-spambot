@@ -11,10 +11,6 @@ jest.mock('./../../../src/messages/fetchEmotes')
 jest.mock('./../../../src/messages/fetchWhitelistedEmotes')
 
 describe('emoteUtils', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('print correct output to the console', async () => {
     const whitelistChannels = ['123321']
     const emoteArray1 = [1]
@@ -44,10 +40,6 @@ describe('emoteUtils', () => {
 })
 
 describe('hasSubEmotes', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('returns false for empty emoteCodes array', () => {
     const allowedEmotes = [123, 456]
     const emoteCodes: number[] = []

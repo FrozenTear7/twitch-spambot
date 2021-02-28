@@ -9,10 +9,6 @@ jest.mock('axios')
 jest.mock('../../../src/utils/parseTypes/toChannelInfo')
 
 describe('fetchEmotes', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('returns emotes correctly', async () => {
     const channelId = '0'
     const resMock = { data: 'dataMock' }

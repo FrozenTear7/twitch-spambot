@@ -12,10 +12,6 @@ jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 describe('sayInChannel', () => {
   const channelName = 'testChannel'
 
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   test('prints correct output to the console', async () => {
     const msg = 'test message'
 
@@ -44,8 +40,8 @@ describe('sayInChannel', () => {
 
     await sayInChannel(msg)
 
-    expect(logSpy).toHaveBeenCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith(
       `Exception while printing to the channel: ${errorMsg}`
     )
   })

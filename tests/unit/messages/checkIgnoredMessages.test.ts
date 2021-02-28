@@ -1,15 +1,10 @@
 import { checkIgnoredMessage } from './../../../src/messages/checkIgnoredMessage'
+import ignoredWordsJson from '../../../config/ignoredWords.json'
 
-jest.mock('../../../config/ignoredWords.json', () => ({
-  ignoredWords: ['ignoredWord'],
-}))
+jest.mock('../../../config/ignoredWords.json')
 
 describe('checkIgnoredMessage', () => {
   const authorsSeen = ['testAuthor']
-
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
 
   test('rejects a command message', () => {
     const msg = '!botcommand'
@@ -18,7 +13,9 @@ describe('checkIgnoredMessage', () => {
   })
 
   test('rejects a message containing an ignored word', () => {
-    const msg = 'something ignoredWord something2'
+    const ignoredWord = 'ignoredWord'
+    ignoredWordsJson.ignoredWords = [ignoredWord]
+    const msg = `something ${ignoredWord} something2`
 
     expect(checkIgnoredMessage(authorsSeen, msg)).toBe(true)
   })
