@@ -1,4 +1,4 @@
-import { getBaseSpam } from './../../../../src/messages/spamUtils'
+import { getBaseSpam } from '../../../src/messages/spamUtils'
 
 describe('getBaseSpam', () => {
   beforeEach(() => {

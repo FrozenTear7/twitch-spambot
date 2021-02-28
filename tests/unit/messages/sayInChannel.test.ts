@@ -9,14 +9,14 @@ jest.mock('./../../../src/index', () => ({
 }))
 jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 
-describe('logMessage', () => {
+describe('sayInChannel', () => {
   const channelName = 'testChannel'
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  test('print correct output to the console', async () => {
+  test('prints correct output to the console', async () => {
     const msg = 'test message'
 
     config.channelName = channelName

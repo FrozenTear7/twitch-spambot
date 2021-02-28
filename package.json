@@ -42,6 +42,7 @@
     "mockdate": "^3.0.2",
     "nodemon": "^2.0.6",
     "prettier": "^2.2.1",
+    "ts-jest": "^26.5.2",
     "ts-node-dev": "^1.1.6"
   },
   "scripts": {
