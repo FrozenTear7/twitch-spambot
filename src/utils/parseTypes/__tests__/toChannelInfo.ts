@@ -1,4 +1,4 @@
-import toChannelInfo from '../../../../src/utils/parseTypes/toChannelInfo'
+import toChannelInfo from '../toChannelInfo'
 
 describe('toChannelInfo', () => {
   test('properly parses an Emote', () => {

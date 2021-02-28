@@ -96,6 +96,9 @@ const addMessage = (
     .map((x) => mapMessageToScores(x.message, currentMessages))
     .sort((x) => x.score)[0]
 
+  console.log(currentMessages)
+  console.log(bestMessage)
+
   if (bestMessage && bestMessage.score > config.messageScore) {
     logMessage(bestMessage.message, bestMessage.score)
 

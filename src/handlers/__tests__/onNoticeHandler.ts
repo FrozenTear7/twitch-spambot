@@ -1,4 +1,4 @@
-import { onNoticeHandler } from './../../../src/handlers/onNoticeHandler'
+import { onNoticeHandler } from '../onNoticeHandler'
 
 describe('onNoticeHandler', () => {
   const channel = 'test'

@@ -1,7 +1,10 @@
-import { sayInChannel } from './../../../src/messages/sayInChannel'
+// import { mocked } from 'ts-jest/utils'
+import { sayInChannel } from '../../messages/sayInChannel'
 import { ChatUserstate } from 'tmi.js'
-import config from '../../../src/config'
-import { onMessageHandler } from './../../../src/handlers/onMessageHandler'
+import config from '../../config'
+import { onMessageHandler } from '../onMessageHandler'
+// import { calculateScore } from '../../utils/calculateScore'
+// import { logMessage } from '../../utils/logMessage'
 
 jest.useFakeTimers()
 
@@ -35,10 +38,6 @@ jest.mock('./../../../src/messages/emoteUtils', () => ({
 }))
 
 describe('onMessageHandler', () => {
-  //   beforeEach(() => {
-  //     jest.resetAllMocks()
-  //   })
-
   const target = 'targetChannel'
   const author = 'test author'
   const context: ChatUserstate = {
@@ -94,10 +93,10 @@ describe('onMessageHandler', () => {
 
   //   test('posts a message above the score threshold', () => {
   //     const msg = 'test chat message'
-  //     const calculateScoreValueMock = 5
+  //     const calculateScoreValueMock = 2
 
   //     const calculateScoreMock = mocked(calculateScore, true)
-  //     calculateScoreMock.mockImplementation(() => calculateScoreValueMock)
+  //     calculateScoreMock.mockReturnValue(calculateScoreValueMock)
 
   //     onMessageHandler(target, context, msg, false)
 
@@ -111,10 +110,10 @@ describe('onMessageHandler', () => {
   //   test('posts an /action message', () => {
   //     context['message-type'] = 'action'
   //     const msg = 'test action message'
-  //     const calculateScoreValueMock = 10
+  //     const calculateScoreValueMock = 3
 
   //     const calculateScoreMock = mocked(calculateScore, true)
-  //     calculateScoreMock.mockImplementation(() => calculateScoreValueMock)
+  //     calculateScoreMock.mockReturnValue(calculateScoreValueMock)
 
   //     onMessageHandler(target, context, msg, false)
 

@@ -1,10 +1,7 @@
-import { globalChannel } from './../../../src/utils/constants'
-import { fetchEmotes } from './../../../src/messages/fetchEmotes'
-import { fetchWhitelistedEmotes } from './../../../src/messages/fetchWhitelistedEmotes'
-import {
-  getAllowedEmotes,
-  hasSubEmotes,
-} from './../../../src/messages/emoteUtils'
+import { globalChannel } from '../../utils/constants'
+import { fetchEmotes } from '../fetchEmotes'
+import { fetchWhitelistedEmotes } from '../fetchWhitelistedEmotes'
+import { getAllowedEmotes, hasSubEmotes } from '../emoteUtils'
 import { mocked } from 'ts-jest/utils'
 
 jest.mock('./../../../src/messages/fetchEmotes')

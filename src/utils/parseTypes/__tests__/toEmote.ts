@@ -1,4 +1,4 @@
-import toEmote from '../../../../src/utils/parseTypes/toEmote'
+import toEmote from '../toEmote'
 
 describe('toEmote', () => {
   test('properly parses an Emote', () => {

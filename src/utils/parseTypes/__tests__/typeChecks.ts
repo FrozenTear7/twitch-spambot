@@ -1,9 +1,4 @@
-import {
-  isString,
-  isNumber,
-  isArray,
-  exists,
-} from './../../../../src/utils/parseTypes/typeChecks'
+import { isString, isNumber, isArray, exists } from '../typeChecks'
 
 beforeEach(() => {
   jest.clearAllMocks()

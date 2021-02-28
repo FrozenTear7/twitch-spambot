@@ -1,8 +1,8 @@
-import { fetchEmotes } from './../../../src/messages/fetchEmotes'
-import { emotesURI } from '../../../src/utils/constants'
+import { fetchEmotes } from '../fetchEmotes'
+import { emotesURI } from '../../utils/constants'
 import { mocked } from 'ts-jest/utils'
-import { ChannelInfo, Emote } from '../../../src/types'
-import toChannelInfo from '../../../src/utils/parseTypes/toChannelInfo'
+import { ChannelInfo, Emote } from '../../types'
+import toChannelInfo from '../../utils/parseTypes/toChannelInfo'
 import axios from 'axios'
 
 jest.mock('axios')

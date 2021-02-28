@@ -1,4 +1,4 @@
-import { checkIgnoredMessage } from './../../../src/messages/checkIgnoredMessage'
+import { checkIgnoredMessage } from '../checkIgnoredMessage'
 import ignoredWordsJson from '../../../config/ignoredWords.json'
 
 jest.mock('../../../config/ignoredWords.json')

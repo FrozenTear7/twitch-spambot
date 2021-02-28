@@ -1,6 +1,6 @@
-import { client } from './../../../src/index'
-import { sayInChannel } from './../../../src/messages/sayInChannel'
-import config from '../../../src/config'
+import { client } from '../../index'
+import { sayInChannel } from '../sayInChannel'
+import config from '../../config'
 
 jest.mock('./../../../src/index', () => ({
   client: {

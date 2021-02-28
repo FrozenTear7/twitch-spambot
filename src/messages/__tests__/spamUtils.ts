@@ -1,4 +1,4 @@
-import { getBaseSpam } from '../../../src/messages/spamUtils'
+import { getBaseSpam } from '../spamUtils'
 
 describe('getBaseSpam', () => {
   test('leaves base spam as is', () => {

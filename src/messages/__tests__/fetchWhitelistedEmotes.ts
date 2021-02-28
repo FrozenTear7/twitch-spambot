@@ -1,5 +1,5 @@
-import { fetchEmotes } from './../../../src/messages/fetchEmotes'
-import { fetchWhitelistedEmotes } from './../../../src/messages/fetchWhitelistedEmotes'
+import { fetchEmotes } from '../fetchEmotes'
+import { fetchWhitelistedEmotes } from '../fetchWhitelistedEmotes'
 import { mocked } from 'ts-jest/utils'
 
 jest.mock('../../../src/messages/fetchEmotes')

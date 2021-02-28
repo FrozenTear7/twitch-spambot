@@ -1,6 +1,6 @@
-import { MessageData } from './../../../src/types'
-import { getBaseSpam } from './../../../src/messages/spamUtils'
-import { calculateScore } from './../../../src/utils/calculateScore'
+import { MessageData } from '../../types'
+import { getBaseSpam } from '../../messages/spamUtils'
+import { calculateScore } from '../calculateScore'
 import stringSimilarity from 'string-similarity'
 
 jest.mock('./../../../src/messages/spamUtils', () => ({

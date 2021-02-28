@@ -1,6 +1,6 @@
-import { logMessage } from './../../../src/utils/logMessage'
+import { logMessage } from '../logMessage'
 import MockDate from 'mockdate'
-import config from '../../../src/config'
+import config from '../../config'
 
 jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 
