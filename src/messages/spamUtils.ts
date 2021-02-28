@@ -5,7 +5,7 @@ const escapeRegExp = (stringToEscape: string) =>
 export const getBaseSpam = (msg: string, spamMinLength = 3): string => {
   if (msg.length < spamMinLength) return msg
 
-  let result = msg
+  let result = ''
   let repetitions = 0
 
   for (let i = spamMinLength; i < msg.length; i++) {
@@ -17,7 +17,7 @@ export const getBaseSpam = (msg: string, spamMinLength = 3): string => {
     if (countOccurences > repetitions) {
       result = msgSubstring
       repetitions = countOccurences
-    } else if (countOccurences === repetitions) {
+    } else if (countOccurences === repetitions && repetitions !== 0) {
       result = msgSubstring
     }
   }

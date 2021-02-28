@@ -26,4 +26,12 @@ describe('getBaseSpam', () => {
 
     expect(getBaseSpam(msg)).toBe(msg)
   })
+
+  test('no regex matches return msg', () => {
+    const msg = 'test'
+
+    jest.spyOn(String.prototype, 'match').mockReturnValue(null)
+
+    expect(getBaseSpam(msg)).toBe(msg)
+  })
 })

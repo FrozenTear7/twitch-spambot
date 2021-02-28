@@ -1,0 +1,23 @@
+import { mocked } from 'ts-jest/utils'
+import { sayInChannel } from './../../messages/sayInChannel'
+import { autoResponse } from './../autoResponse'
+import config from '../../config'
+
+jest.autoMockOn()
+
+jest.mock('../../config', () => ({ mentionResponse: jest.fn() }))
+jest.mock('./../../messages/sayInChannel')
+
+describe('autoResponse', () => {
+  test("don't respond if disabled", () => {
+    const msg = 'test'
+    const author = 'test'
+    config.mentionResponse = 0
+
+    const sayInChannelMock = mocked(sayInChannel, true)
+
+    void autoResponse(msg, author)
+
+    expect(sayInChannelMock).toBeCalledTimes(0)
+  })
+})
