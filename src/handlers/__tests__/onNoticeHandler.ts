@@ -1,5 +1,11 @@
 import { onNoticeHandler } from '../onNoticeHandler'
 
+jest.mock('colors', () => ({
+  red: jest.fn((msg: string) => msg),
+  cyan: jest.fn((msg: string) => msg),
+  dim: jest.fn((msg: string) => msg),
+}))
+
 describe('onNoticeHandler', () => {
   const channel = 'test'
   const noticeMsg = 'test'

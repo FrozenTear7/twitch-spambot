@@ -7,7 +7,12 @@ jest.mock('./../../../src/index', () => ({
     say: jest.fn(),
   },
 }))
+
 jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
+
+jest.mock('colors', () => ({
+  red: jest.fn((msg: string) => msg),
+}))
 
 describe('sayInChannel', () => {
   const channelName = 'testChannel'

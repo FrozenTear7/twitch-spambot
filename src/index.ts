@@ -4,6 +4,7 @@ import { getAllowedEmotes } from './messages/emoteUtils'
 import { onNoticeHandler } from './handlers/onNoticeHandler'
 import { onMessageHandler } from './handlers/onMessageHandler'
 import config from './config'
+import colors from 'colors'
 
 // Export globally unchanged variables
 export let allowedEmotes: number[] = []
@@ -14,18 +15,18 @@ const main = async () => {
 
   // Fetch global and your whitelisted emotes
   try {
-    console.log('Fetching all global emotes')
+    console.log(colors.dim(colors.cyan('Fetching all global emotes')))
     allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
-    console.log('Finished fetching global emotes')
+    console.log(colors.cyan('Finished fetching global emotes'))
   } catch (e) {
-    console.log((e as Error).message)
+    console.log(colors.red((e as Error).message))
     process.exit(0)
   }
 
   // Register handlers
   client.on('message', onMessageHandler)
   client.on('connected', (addr, port) =>
-    console.log(`* Connected to ${addr}:${port}`)
+    console.log(colors.cyan(`Connected to ${addr}:${port}`))
   )
   client.on('notice', onNoticeHandler)
 
@@ -33,23 +34,25 @@ const main = async () => {
   try {
     await client.connect()
   } catch (_e) {
-    console.log('Bot shutting down, due to an authentication error')
+    console.log(colors.red('Bot shutting down, due to an authentication error'))
     process.exit(0)
   }
 }
 
 // Finish the script gracefully
 process.on('SIGINT', () => {
-  console.log('Bot shutting down FeelsOkayMan')
+  console.log(colors.dim('Bot shutting down FeelsOkayMan'))
   void client.disconnect()
   process.exit(0)
 })
 
 main().then(
   () => {
-    console.log('Starting the bot')
+    console.log(colors.green('Bot started'))
   },
   (e) => {
-    console.log(`An exception occured at top level: ${(e as Error).message}`)
+    console.log(
+      colors.red(`An exception occured at top level: ${(e as Error).message}`)
+    )
   }
 )
