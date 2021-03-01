@@ -77,15 +77,15 @@ export const onMessageHandler = (
     .sort((x) => x.score)[0]
 
   if (bestMessage && bestMessage.score > config.messageScore) {
+    // Save current data for conditions in the next iteration
+    prevTimestamp = Math.floor(Date.now())
+    prevMsg = bestMessage.message
+    currentMessages = []
+
     logMessage(bestMessage.message, bestMessage.score)
 
     if (messageType === 'chat') void sayInChannel(bestMessage.message)
     else if (messageType === 'action')
       void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
-
-    // Save current data for conditions in the next iteration
-    prevTimestamp = Math.floor(Date.now())
-    prevMsg = bestMessage.message
-    currentMessages = []
   }
 }
