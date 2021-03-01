@@ -10,7 +10,6 @@ export const autoResponse = async (
     msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase()) &&
     author
   ) {
-    console.log('xd')
     await sayInChannel(`@${author} ConcernDoge 👌`)
 
     return new Promise((resolve) =>
@@ -20,7 +19,6 @@ export const autoResponse = async (
       )
     )
   } else {
-    console.log('xd2')
     return new Promise((resolve) => resolve)
   }
 }

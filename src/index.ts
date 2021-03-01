@@ -45,13 +45,11 @@ process.on('SIGINT', () => {
   process.exit(0)
 })
 
-void main()
-
-// main().then(
-//   () => {
-//     console.log('Starting the bot')
-//   },
-//   (e) => {
-//     console.log(`An exception occured at top level: ${(e as Error).message}`)
-//   }
-// )
+main().then(
+  () => {
+    console.log('Starting the bot')
+  },
+  (e) => {
+    console.log(`An exception occured at top level: ${(e as Error).message}`)
+  }
+)

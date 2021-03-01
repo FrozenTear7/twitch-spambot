@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mocked } from 'ts-jest/utils'
-import { getAllowedEmotes } from '../../src/messages/emoteUtils'
+import { getAllowedEmotes } from '../messages/emoteUtils'
 import whitelistEmotes from '../../config/whitelistEmotes.json'
 
 jest.mock('tmi.js')
@@ -12,8 +12,10 @@ jest.mock('./../../config/whitelistEmotes.json', () => ({
 
 jest.mock('./../../src/messages/emoteUtils')
 
+jest.mock('../config')
+
 describe('index', () => {
-  test('exports a valid client and allowedEmotes', () => {
+  test('exports a valid client and allowedEmotes', async () => {
     const allowedEmotesDataMock = [123, 456]
 
     const logSpy = jest.spyOn(global.console, 'log')
@@ -22,17 +24,43 @@ describe('index', () => {
       return new Promise((resolve) => resolve(allowedEmotesDataMock))
     })
 
-    require('../../src/index')
+    await require('../../src/index')
 
-    expect(logSpy).toBeCalledTimes(3)
+    expect(logSpy).toBeCalledTimes(2)
     expect(logSpy).toBeCalledWith('Fetching all global emotes')
     expect(logSpy).toBeCalledWith('Finished fetching global emotes')
-    expect(logSpy).toBeCalledWith(
-      expect.stringMatching(/\* Connected to irc-ws\.chat\.twitch\.tv:\d+/)
-    )
-    expect(logSpy).toBeCalledWith('Starting the bot')
 
     expect(getAllowedEmotesMock).toBeCalledTimes(1)
     expect(getAllowedEmotesMock).toBeCalledWith(whitelistEmotes.channels)
   })
+
+  // test('catches getAllowedEmotes Errors', async () => {
+  //   const errorMessage = 'test error'
+  //   const exitMsg = 'test exit'
+
+  //   const logSpy = jest.spyOn(global.console, 'log')
+  //   const getAllowedEmotesMock = mocked(getAllowedEmotes, true)
+  //   getAllowedEmotesMock.mockImplementation(() => {
+  //     throw new Error(errorMessage)
+  //   })
+  //   const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+  //     throw new Error(exitMsg)
+  //   })
+
+  //   try {
+  //     await require('../../src/index')
+  //   } catch (e) {
+  //     expect((e as Error).message).toBe(exitMsg)
+  //   }
+
+  //   expect(logSpy).toBeCalledTimes(3)
+  //   expect(logSpy).toBeCalledWith('Fetching all global emotes')
+  //   expect(logSpy).toBeCalledWith(errorMessage)
+  //   expect(logSpy).toBeCalledWith(
+  //     `An exception occured at top level: ${exitMsg}`
+  //   )
+
+  //   expect(exitSpy).toBeCalledTimes(1)
+  //   expect(exitSpy).toBeCalledWith(0)
+  // })
 })
