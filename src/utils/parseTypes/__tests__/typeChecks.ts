@@ -1,9 +1,8 @@
-import {
-  isString,
-  isNumber,
-  isArray,
-  exists,
-} from './../../../../src/utils/parseTypes/typeChecks'
+import { isString, isNumber, isArray, exists } from '../typeChecks'
+
+beforeEach(() => {
+  jest.clearAllMocks()
+})
 
 describe('isString', () => {
   test('string returns true', () => {
@@ -64,7 +63,7 @@ describe('exists', () => {
     const valuesToTest = [null, undefined]
 
     valuesToTest.forEach((valueToTest) =>
-      expect(exists(valueToTest)).toBe(true)
+      expect(exists(valueToTest)).toBe(false)
     )
   })
 
@@ -82,7 +81,7 @@ describe('exists', () => {
     ]
 
     valuesToTest.forEach((valueToTest) =>
-      expect(exists(valueToTest)).toBe(false)
+      expect(exists(valueToTest)).toBe(true)
     )
   })
 })

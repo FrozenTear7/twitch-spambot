@@ -1,11 +1,19 @@
 # twitch-spambot
 
-[![buddy pipeline](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651/badge.svg?token=67c90bad49816f04938626247f8b89bb1bbf782b583b5fc4b78a863b0d4d18df 'buddy pipeline')](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651)
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FrozenTear7/twitch-spambot)
-![GitHub Release Date](https://img.shields.io/github/release-date/FrozenTear7/twitch-spambot)
-![GitHub](https://img.shields.io/github/license/FrozenTear7/twitch-spambot)
-![GitHub issues](https://img.shields.io/github/issues-raw/FrozenTear7/twitch-spambot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/FrozenTear7/twitch-spambot)
+[![Buddy](https://assets.buddy.works/automated-dark.svg)](https://buddy.works/)
+
+![Buddy master pipeline](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651/badge.svg?token=67c90bad49816f04938626247f8b89bb1bbf782b583b5fc4b78a863b0d4d18df)
+
+![Coverage - statements](./badges/badge-statements.svg)
+![Coverage - branches](./badges/badge-branches.svg)
+![Coverage - functions](./badges/badge-functions.svg)
+![Coverage - lines](./badges/badge-lines.svg)
+
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/releases)
+[![GitHub Release Date](https://img.shields.io/github/release-date/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/releases)
+[![License](https://img.shields.io/github/license/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/blob/master/LICENSE)
+[![GitHub open issues](https://img.shields.io/github/issues-raw/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/issues)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/issues?q=is%3Aissue+is%3Aclosed)
 
 ### An automated twitch spammer
 

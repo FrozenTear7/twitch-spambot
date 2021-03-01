@@ -18,7 +18,7 @@ const main = async () => {
     allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
     console.log('Finished fetching global emotes')
   } catch (e) {
-    console.log(e)
+    console.log((e as Error).message)
     process.exit(0)
   }
 
@@ -30,18 +30,26 @@ const main = async () => {
   client.on('notice', onNoticeHandler)
 
   // Start the client
-  await client.connect().catch((_e) => {
+  try {
+    await client.connect()
+  } catch (_e) {
     console.log('Bot shutting down, due to an authentication error')
     process.exit(0)
-  })
-  console.log('Starting the bot')
+  }
 }
 
 // Finish the script gracefully
 process.on('SIGINT', () => {
   console.log('Bot shutting down FeelsOkayMan')
   void client.disconnect()
-  process.exit()
+  process.exit(0)
 })
 
-void main()
+main().then(
+  () => {
+    console.log('Starting the bot')
+  },
+  (e) => {
+    console.log(`An exception occured at top level: ${(e as Error).message}`)
+  }
+)

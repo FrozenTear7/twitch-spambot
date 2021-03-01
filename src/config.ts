@@ -26,6 +26,11 @@ if (!channelName) {
   process.exit(0)
 }
 
+if (![0, 1].includes(mentionResponse)) {
+  console.log('Please provide a valid mentionResponse value')
+  process.exit(0)
+}
+
 // Options passed to the Twitch client
 
 const clientOptions = {

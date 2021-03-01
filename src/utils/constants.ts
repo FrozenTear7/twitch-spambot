@@ -10,3 +10,4 @@ export const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-
 
 // Other consts
 export const cooldownTime = 30001
+export const globalChannel = '0'

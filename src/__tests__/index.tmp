@@ -1,0 +1,66 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { mocked } from 'ts-jest/utils'
+import { getAllowedEmotes } from '../messages/emoteUtils'
+import whitelistEmotes from '../../config/whitelistEmotes.json'
+
+jest.mock('tmi.js')
+
+jest.mock('./../../config/whitelistEmotes.json', () => ({
+  channels: ['123321'],
+}))
+
+jest.mock('./../../src/messages/emoteUtils')
+
+jest.mock('../config')
+
+describe('index', () => {
+  test('exports a valid client and allowedEmotes', async () => {
+    const allowedEmotesDataMock = [123, 456]
+
+    const logSpy = jest.spyOn(global.console, 'log')
+    const getAllowedEmotesMock = mocked(getAllowedEmotes, true)
+    getAllowedEmotesMock.mockImplementation(() => {
+      return new Promise((resolve) => resolve(allowedEmotesDataMock))
+    })
+
+    await require('../../src/index')
+
+    expect(logSpy).toBeCalledTimes(2)
+    expect(logSpy).toBeCalledWith('Fetching all global emotes')
+    expect(logSpy).toBeCalledWith('Finished fetching global emotes')
+
+    expect(getAllowedEmotesMock).toBeCalledTimes(1)
+    expect(getAllowedEmotesMock).toBeCalledWith(whitelistEmotes.channels)
+  })
+
+  // test('catches getAllowedEmotes Errors', async () => {
+  //   const errorMessage = 'test error'
+  //   const exitMsg = 'test exit'
+
+  //   const logSpy = jest.spyOn(global.console, 'log')
+  //   const getAllowedEmotesMock = mocked(getAllowedEmotes, true)
+  //   getAllowedEmotesMock.mockImplementation(() => {
+  //     throw new Error(errorMessage)
+  //   })
+  //   const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+  //     throw new Error(exitMsg)
+  //   })
+
+  //   try {
+  //     await require('../../src/index')
+  //   } catch (e) {
+  //     expect((e as Error).message).toBe(exitMsg)
+  //   }
+
+  //   expect(logSpy).toBeCalledTimes(3)
+  //   expect(logSpy).toBeCalledWith('Fetching all global emotes')
+  //   expect(logSpy).toBeCalledWith(errorMessage)
+  //   expect(logSpy).toBeCalledWith(
+  //     `An exception occured at top level: ${exitMsg}`
+  //   )
+
+  //   expect(exitSpy).toBeCalledTimes(1)
+  //   expect(exitSpy).toBeCalledWith(0)
+  // })
+})

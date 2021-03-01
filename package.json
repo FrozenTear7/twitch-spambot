@@ -7,6 +7,7 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "request": "^2.88.2",
     "string-similarity": "^4.0.4",
@@ -14,7 +15,7 @@
     "typescript": "^4.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.1",
+    "@babel/core": "^7.13.8",
     "@babel/preset-env": "^7.13.5",
     "@babel/preset-typescript": "^7.13.0",
     "@tsconfig/node14": "^1.0.0",
@@ -26,6 +27,8 @@
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "babel-jest": "^26.6.3",
+    "babel-plugin-rewire": "^1.2.0",
+    "babel-plugin-rewire-ts": "^1.4.0",
     "eslint": "^6.8.0",
     "eslint-config-node": "^4.1.0",
     "eslint-config-prettier": "^6.15.0",
@@ -34,26 +37,33 @@
     "eslint-plugin-prettier": "^3.2.0",
     "husky": "^4.3.5",
     "jest": "^26.6.3",
+    "jest-coverage-badges": "^1.1.2",
     "lint-staged": "^10.5.3",
     "mockdate": "^3.0.2",
     "nodemon": "^2.0.6",
     "prettier": "^2.2.1",
+    "ts-jest": "^26.5.2",
     "ts-node-dev": "^1.1.6"
   },
   "scripts": {
     "tsc": "tsc",
     "start": "node src/index.js",
-    "start-dev": "node build/src/index.js",
+    "start:dev": "node build/src/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "test": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests --no-cache --coverage",
+    "test:coverage": "jest --passWithNoTests --no-cache --silent --coverage --collectCoverageFrom=src/**/*.ts",
+    "test:badges": "yarn test:coverage && jest-coverage-badges --input ./coverage/coverage-summary.json --output ./badges",
     "lint": "eslint --ext .ts . --fix"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && yarn test:badges && git add ./badges"
     }
   },
   "lint-staged": {
-    "*.{js,jsx,mjs}": "eslint --cache --fix"
+    "*.{js,jsx,mjs,ts,tsx}": [
+      "eslint --fix",
+      "git add ."
+    ]
   }
 }

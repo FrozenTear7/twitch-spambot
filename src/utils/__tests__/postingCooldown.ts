@@ -1,4 +1,4 @@
-import { postingCooldown } from '../../../src/utils/postingCooldown'
+import { postingCooldown } from '../postingCooldown'
 
 describe('postingCooldown', () => {
   test('return true for same messages in cooldown', () => {
