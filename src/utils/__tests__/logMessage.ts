@@ -4,6 +4,11 @@ import config from '../../config'
 
 jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 
+jest.mock('colors', () => ({
+  green: jest.fn((msg: string) => msg),
+  yellow: jest.fn((msg: string) => msg),
+}))
+
 describe('logMessage', () => {
   test('print correct output to the console', () => {
     const channelName = 'testChannel'

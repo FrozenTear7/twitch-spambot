@@ -8,6 +8,7 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.21.1",
+    "colors": "^1.4.0",
     "dotenv": "^8.2.0",
     "request": "^2.88.2",
     "string-similarity": "^4.0.4",
