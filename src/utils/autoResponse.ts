@@ -5,8 +5,6 @@ export const autoResponse = async (
   msg: string,
   author?: string
 ): Promise<void> => {
-  console.log(config)
-  console.log(config.mentionResponse)
   if (
     config.mentionResponse &&
     msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase()) &&
