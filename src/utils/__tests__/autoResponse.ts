@@ -14,7 +14,7 @@ describe('autoResponse', () => {
   test("don't respond if disabled", () => {
     const msg = 'test'
     const author = 'test'
-    config.mentionResponse = 0
+    config.mentionResponse = ''
 
     const sayInChannelMock = mocked(sayInChannel, true)
 
@@ -26,7 +26,7 @@ describe('autoResponse', () => {
   test("don't respond if author doesn't exist or message has no mention", () => {
     const msg = 'test'
     const author = 'test'
-    config.mentionResponse = 1
+    config.mentionResponse = 'test autoresponse'
     config.TWITCH_USERNAME = 'testUsername'
 
     const sayInChannelMock = mocked(sayInChannel, true)
@@ -35,11 +35,12 @@ describe('autoResponse', () => {
     void autoResponse(msg, undefined)
 
     expect(sayInChannelMock).toBeCalledTimes(0)
+    expect(sayInChannelMock).not.toBeCalledWith(config.mentionResponse)
   })
 
   test('respond feature enabled and message has a mention', () => {
     const author = 'test'
-    config.mentionResponse = 1
+    config.mentionResponse = 'test autoresponse'
     config.TWITCH_USERNAME = 'testUsername'
     const msg = `hey ${config.TWITCH_USERNAME}`
 
@@ -48,7 +49,7 @@ describe('autoResponse', () => {
     void autoResponse(msg, author)
 
     expect(sayInChannelMock).toBeCalledTimes(1)
-    expect(sayInChannelMock).toBeCalledWith(`@${author} ConcernDoge 👌`)
+    expect(sayInChannelMock).toBeCalledWith(config.mentionResponse)
     jest.runOnlyPendingTimers()
   })
 })

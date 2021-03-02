@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // babel.config.js
 module.exports = {
   presets: [
