@@ -1,3 +1,4 @@
+import { handleCatch } from './../../utils/handleCatch'
 import { client } from '../../index'
 import { sayInChannel } from '../sayInChannel'
 import config from '../../config'
@@ -12,6 +13,10 @@ jest.mock('../../../src/config', () => ({ channelName: jest.fn() }))
 
 jest.mock('colors', () => ({
   red: jest.fn((msg: string) => msg),
+}))
+
+jest.mock('./../../utils/handleCatch', () => ({
+  handleCatch: jest.fn(),
 }))
 
 describe('sayInChannel', () => {
@@ -31,43 +36,20 @@ describe('sayInChannel', () => {
 
   test('properly handles the error', async () => {
     const msg = 'test message'
-    const errorMsg = 'errorMock'
-    const invalidErrorMsg = 1
+    const clientSayError = new Error('errorMock')
 
     config.channelName = channelName
-    const logSpy = jest.spyOn(global.console, 'log')
-    const clientSaySpy = jest.spyOn(client, 'say').mockImplementation(() => {
-      throw new Error(errorMsg)
+    jest.spyOn(global.console, 'log')
+    jest.spyOn(client, 'say').mockImplementation(() => {
+      throw clientSayError
     })
 
     await sayInChannel(msg)
 
-    expect(logSpy).toBeCalledWith(
-      `Exception while printing to the channel: ${errorMsg}`
-    )
-
-    clientSaySpy.mockImplementation(() => {
-      throw errorMsg
-    })
-
-    await sayInChannel(msg)
-
-    clientSaySpy.mockImplementation(() => {
-      throw invalidErrorMsg // Throw something else than Error or string
-    })
-
-    try {
-      expect(await sayInChannel(msg)).toThrow()
-    } catch (e) {
-      expect(e).toBe(invalidErrorMsg)
-    }
-
-    expect(logSpy).toBeCalledTimes(2)
-    expect(logSpy).toBeCalledWith(
-      `Exception while printing to the channel: ${errorMsg}`
-    )
-    expect(logSpy).not.toBeCalledWith(
-      `Exception while printing to the channel: ${invalidErrorMsg}`
+    expect(handleCatch).toBeCalledTimes(1)
+    expect(handleCatch).toBeCalledWith(
+      'Exception while printing to the channel',
+      clientSayError
     )
   })
 })
