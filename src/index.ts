@@ -1,3 +1,4 @@
+import { handleCatch } from './utils/handleCatch'
 import tmi from 'tmi.js'
 import whitelistEmotes from '../config/whitelistEmotes.json'
 import { getAllowedEmotes } from './messages/emoteUtils'
@@ -19,7 +20,7 @@ const main = async () => {
     allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
     console.log(colors.cyan('Finished fetching global emotes'))
   } catch (e) {
-    console.log(colors.red((e as Error).message))
+    handleCatch('Exception while fetching emotes', e)
     process.exit(0)
   }
 

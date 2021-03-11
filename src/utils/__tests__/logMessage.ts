@@ -24,7 +24,7 @@ describe('logMessage', () => {
     logMessage(msg, score)
 
     expect(logSpy).toBeCalledTimes(1)
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logSpy).toBeCalledWith(
       `[${currentDateFormatted}, #${channelName}, score: ${score.toFixed(
         2
       )}]: ${msg}`

@@ -70,22 +70,25 @@ export const onMessageHandler = (
       (x) =>
         !hasSubEmotes(allowedEmotes, x.emoteCodes) &&
         !checkIgnoredMessage(authorsSeen, x.message) &&
-        postingCooldown(x.message, prevMsg, prevTimestamp) &&
-        x.timestamp - prevTimestamp > config.sleepInterval
+        postingCooldown(x.message, prevMsg, prevTimestamp)
     )
     .map((x) => mapMessageToScore(x.message, currentMessages))
     .sort((x) => x.score)[0]
 
-  if (bestMessage && bestMessage.score > config.messageScore) {
+  if (
+    Math.floor(Date.now()) - prevTimestamp > config.sleepInterval &&
+    bestMessage &&
+    bestMessage.score > config.messageScore
+  ) {
+    // Save current data for conditions in the next iteration
+    prevTimestamp = Math.floor(Date.now())
+    prevMsg = bestMessage.message
+    currentMessages = []
+
     logMessage(bestMessage.message, bestMessage.score)
 
     if (messageType === 'chat') void sayInChannel(bestMessage.message)
     else if (messageType === 'action')
       void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
-
-    // Save current data for conditions in the next iteration
-    prevTimestamp = Math.floor(Date.now())
-    prevMsg = bestMessage.message
-    currentMessages = []
   }
 }

@@ -11,6 +11,6 @@ export const fetchEmotes = async (
     const resJson = toChannelInfo(res.data)
     return resJson.emotes.map((emote) => emote.id)
   } else {
-    throw Error(`Could not fetch emotes for channel: ${channelId}`)
+    throw new Error(`Could not fetch emotes for channel: ${channelId}`)
   }
 }

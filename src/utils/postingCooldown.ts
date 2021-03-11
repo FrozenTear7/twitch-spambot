@@ -7,4 +7,4 @@ export const postingCooldown = (
 ): boolean =>
   Math.floor(Date.now()) - prevTimestamp > cooldownTime // If an identical message was sent 30s ago ignore the duplicates
     ? true
-    : msg != prevMsg
+    : msg !== prevMsg

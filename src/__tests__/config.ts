@@ -63,7 +63,7 @@ describe('config', () => {
     const readInterval = '5000'
     const sleepInterval = '35000'
     const messageScore = '3'
-    const mentionResponse = '1'
+    const mentionResponse = 'test autoresponse'
 
     process.argv = [
       'test',
@@ -95,7 +95,7 @@ describe('config', () => {
       readInterval: +readInterval,
       sleepInterval: +sleepInterval,
       messageScore: +messageScore,
-      mentionResponse: +mentionResponse,
+      mentionResponse: mentionResponse,
     }
 
     expect(config).toStrictEqual(configCheck)
@@ -126,7 +126,7 @@ describe('config', () => {
       readInterval: 3000,
       sleepInterval: 30000,
       messageScore: 4,
-      mentionResponse: 0,
+      mentionResponse: undefined,
     }
 
     expect(config).toStrictEqual(configCheck)
@@ -149,30 +149,6 @@ describe('config', () => {
 
     expect(logSpy).toBeCalledTimes(1)
     expect(logSpy).toBeCalledWith('Please provide a channel name')
-
-    expect(exitSpy).toBeCalledTimes(1)
-    expect(exitSpy).toBeCalledWith(0)
-  })
-
-  test('exits on missing channelName', () => {
-    const exitMsg = 'mock process.exit(0)'
-    const logSpy = jest.spyOn(global.console, 'log')
-    const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
-      throw new Error(exitMsg)
-    })
-
-    process.argv = ['test', 'test', 'testChannel', '-', '-', '-', '2']
-
-    try {
-      require('../../src/config').default
-    } catch (e) {
-      expect((e as Error).message).toBe(exitMsg)
-    }
-
-    expect(logSpy).toBeCalledTimes(1)
-    expect(logSpy).toBeCalledWith(
-      'Please provide a valid mentionResponse value'
-    )
 
     expect(exitSpy).toBeCalledTimes(1)
     expect(exitSpy).toBeCalledWith(0)

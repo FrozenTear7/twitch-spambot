@@ -6,11 +6,11 @@ export const autoResponse = async (
   author?: string
 ): Promise<void> => {
   if (
-    config.mentionResponse === 1 &&
+    config.mentionResponse &&
     msg.toLowerCase().includes(config.TWITCH_USERNAME.toLowerCase()) &&
     author
   ) {
-    await sayInChannel(`@${author} ConcernDoge 👌`)
+    await sayInChannel(config.mentionResponse)
 
     return new Promise((resolve) =>
       setTimeout(

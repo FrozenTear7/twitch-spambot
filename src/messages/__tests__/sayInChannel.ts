@@ -1,3 +1,4 @@
+import { handleCatch } from './../../utils/handleCatch'
 import { client } from '../../index'
 import { sayInChannel } from '../sayInChannel'
 import config from '../../config'
@@ -14,6 +15,10 @@ jest.mock('colors', () => ({
   red: jest.fn((msg: string) => msg),
 }))
 
+jest.mock('./../../utils/handleCatch', () => ({
+  handleCatch: jest.fn(),
+}))
+
 describe('sayInChannel', () => {
   const channelName = 'testChannel'
 
@@ -21,33 +26,30 @@ describe('sayInChannel', () => {
     const msg = 'test message'
 
     config.channelName = channelName
-    client.say = jest.fn().mockImplementation(
-      () => new Promise<void>((resolve) => resolve())
-    )
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { say: sayMock } = client
+    const clientSaySpy = jest.spyOn(client, 'say')
 
     await sayInChannel(msg)
 
-    expect(sayMock).toBeCalledTimes(1)
-    expect(sayMock).toBeCalledWith(channelName, msg)
+    expect(clientSaySpy).toBeCalledTimes(1)
+    expect(clientSaySpy).toBeCalledWith(channelName, msg)
   })
 
   test('properly handles the error', async () => {
     const msg = 'test message'
-    const errorMsg = 'errorMock'
+    const clientSayError = new Error('errorMock')
 
     config.channelName = channelName
-    const logSpy = jest.spyOn(global.console, 'log')
-    client.say = jest.fn().mockImplementation(() => {
-      throw new Error(errorMsg)
+    jest.spyOn(global.console, 'log')
+    jest.spyOn(client, 'say').mockImplementation(() => {
+      throw clientSayError
     })
 
     await sayInChannel(msg)
 
-    expect(logSpy).toBeCalledTimes(1)
-    expect(logSpy).toBeCalledWith(
-      `Exception while printing to the channel: ${errorMsg}`
+    expect(handleCatch).toBeCalledTimes(1)
+    expect(handleCatch).toBeCalledWith(
+      'Exception while printing to the channel',
+      clientSayError
     )
   })
 })
