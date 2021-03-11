@@ -36,8 +36,8 @@ _.env_ file is required to provide data for the api and the config.
 Create an _.env_ file consiting of values as shown below:
 
 ```bash
-TWITCH_USERNAME=<twitch_username>
-CLIENT_TOKEN=<client_token>
+TWITCH_USERNAME=YourUsername
+CLIENT_TOKEN=oauth:YourOAuthCodeGoesHere
 ```
 
 Client token can be retrieved from [here](https://twitchapps.com/tmi/).
@@ -49,9 +49,9 @@ If you're running a release downloaded from the [releases page](https://github.c
 ```bash
 yarn install --production
 
-yarn start <channelName>
+yarn start CHANNEL_NAME
 # or
-yarn start <channelName> 3000 30000 5
+yarn start CHANNEL_NAME 3000 30000 5
 ```
 
 ### Master version
@@ -67,9 +67,9 @@ and then:
 - if you want to edit the code and made your own changes, run the TypeScript version
 
 ```bash
-yarn run dev <channelName>
+yarn run dev CHANNEL_NAME
 # or
-yarn run dev <channelName> 3000 30000 5
+yarn run dev CHANNEL_NAME 3000 30000 5
 ```
 
 - if you want to compile the TypeScript to pure JavaScript
@@ -77,9 +77,9 @@ yarn run dev <channelName> 3000 30000 5
 ```bash
 yarn run tsc # to make a build directory
 
-yarn start <channelName>
+yarn start:dev CHANNEL_NAME
 # or
-yarn start <channelName> 3000 30000 5
+yarn start:dev CHANNEL_NAME 3000 30000 5
 ```
 
 The program has 4 available arguments:
@@ -93,14 +93,14 @@ The program has 4 available arguments:
 The arguments are passed as:
 
 ```bash
-yarn start <channelName> <readInterval> <sleepInterval> <messageScore> <mentionResponse>
+yarn start CHANNEL_NAME READ_INTERVAL SLEEP_INTERVAL MESSAGE_SCORE MENTION_RESPONSE
 ```
 
 If you wish to omit a particular argument (except the `channelName`), just pass a JavaScript _falsy_ value,
 or an argument that is not a number, for example:
 
 ```bash
-yarn start <channelName> - - 5 -
+yarn start CHANNEL_NAME - - 5 -
 ```
 
 which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `messageScore` from 4 to 5.
@@ -108,16 +108,16 @@ which will result in running the script with default values for `readInterval`, 
 You can also just run:
 
 ```bash
-yarn start <channelName>
+yarn start CHANNEL_NAME
 ```
 
 to run the program with the default arguments.
 Adjust the arguments to match the desired channel's chat speed and activity.
 
-You can also run multiple instances of the script at once by joining `yarn start <channelName>` commands with `&` like:
+You can also run multiple instances of the script at once by joining `yarn start CHANNEL_NAME` commands with `&` like:
 
 ```bash
-yarn start <channelName> & yarn start <channelName2> & yarn start <channelName3>
+yarn start CHANNEL_NAME & yarn start CHANNEL_NAME2 & yarn start CHANNEL_NAME3
 ```
 
 ## Additional ignored words
@@ -156,6 +156,20 @@ After getting the channel ID paste it in as:
 ```
 
 Otherwise just leave the `channels` entry as an empty array.
+
+## Known problems
+
+1. yarn.ps1 cannot be loaded because running scripts is disabled on this system
+
+Error on Windows that doesn't allow the user to install the libraries with yarn:
+
+Open up `Windows PowerShell` and in the terminal type:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+```
+
+After that, yarn should properly install dependencies.
 
 ## Contributing
 
