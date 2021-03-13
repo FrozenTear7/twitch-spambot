@@ -87,7 +87,7 @@ The program has 4 available arguments:
 - **channelName** (required) - channel to which we connect to
 - **readInterval**: default = 5000 _ms_ - the amount of time during which we gather channel messages and try to find the most popular spam
 - **sleepInterval**: default = 30000 _ms_ - duration of sleep after sending the message to the channel
-- **messageScore**: default = 4 - score required for the most popular message to be sent
+- **messageScore**: default = 5 - score required for the most popular message to be sent (every message read within readInterval can contribute from 0 to 1 to the score and in case messages are the same, 2 will be added instead)
 - **mentionResponse**: when provided, results in an auto response (response takes randomly from 2 to 4s) to the person who mentioned your nickname in their message
 
 The arguments are passed as:
@@ -100,10 +100,10 @@ If you wish to omit a particular argument (except the `channelName`), just pass 
 or an argument that is not a number, for example:
 
 ```bash
-yarn start CHANNEL_NAME - - 5 -
+yarn start CHANNEL_NAME - - 6 -
 ```
 
-which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `messageScore` from 4 to 5.
+which will result in running the script with default values for `readInterval`, `sleepInterval` and `mentionResponse`, but will change the default value of `messageScore` from 5 to 6.
 
 You can also just run:
 

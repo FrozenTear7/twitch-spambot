@@ -2,17 +2,12 @@ import { mapMessageToScore } from '../utils/mapMessageToScore'
 import { autoResponse } from '../utils/autoResponse'
 import { ChatUserstate } from 'tmi.js'
 import { urlRegex } from '../utils/constants'
-import { postingCooldown } from '../utils/postingCooldown'
 import { sayInChannel } from '../messages/sayInChannel'
 import { hasSubEmotes } from '../messages/emoteUtils'
 import { checkIgnoredMessage } from '../messages/checkIgnoredMessage'
 import { MessageData, MessageType } from '../types'
 import config from '../config'
 import { allowedEmotes } from '../index'
-import { logMessage } from '../utils/logMessage'
-
-let prevTimestamp = 0
-let prevMsg: string
 
 let currentMessages: MessageData[] = []
 let authorsSeen: string[] = []
@@ -57,7 +52,7 @@ export const onMessageHandler = (
         Math.floor(Date.now()) - message.timestamp <= config.readInterval
     ),
     {
-      message: msg,
+      message: msg.replace(/( 󠀀)+$/, ''), // Remove the special character for spamming at the end if present
       messageType: messageType,
       author: author,
       timestamp: Math.floor(Date.now()),
@@ -69,26 +64,11 @@ export const onMessageHandler = (
     .filter(
       (x) =>
         !hasSubEmotes(allowedEmotes, x.emoteCodes) &&
-        !checkIgnoredMessage(authorsSeen, x.message) &&
-        postingCooldown(x.message, prevMsg, prevTimestamp)
+        !checkIgnoredMessage(authorsSeen, x.message)
     )
     .map((x) => mapMessageToScore(x.message, currentMessages))
     .sort((x) => x.score)[0]
 
-  if (
-    Math.floor(Date.now()) - prevTimestamp > config.sleepInterval &&
-    bestMessage &&
-    bestMessage.score > config.messageScore
-  ) {
-    // Save current data for conditions in the next iteration
-    prevTimestamp = Math.floor(Date.now())
-    prevMsg = bestMessage.message
-    currentMessages = []
-
-    logMessage(bestMessage.message, bestMessage.score)
-
-    if (messageType === 'chat') void sayInChannel(bestMessage.message)
-    else if (messageType === 'action')
-      void sayInChannel(`/me ${bestMessage.message}`) // /me changes the message color to your nickname's color
-  }
+  if (bestMessage && bestMessage.score > config.messageScore)
+    void sayInChannel(bestMessage.message, bestMessage.score, messageType)
 }

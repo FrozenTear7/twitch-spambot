@@ -7,7 +7,6 @@ import { sayInChannel } from '../../messages/sayInChannel'
 import { ChatUserstate } from 'tmi.js'
 import config from '../../config'
 import { onMessageHandler } from '../onMessageHandler'
-import { logMessage } from '../../utils/logMessage'
 
 jest.mock('../../../src/config', () => ({
   mentionResponse: jest.fn(),
@@ -21,8 +20,6 @@ jest.mock('./../../../src/index', () => ({
 jest.mock('./../../../src/messages/sayInChannel', () => ({
   sayInChannel: jest.fn(),
 }))
-
-jest.mock('./../../../src/utils/logMessage')
 
 jest.mock('./../../../src/utils/mapMessageToScore')
 
@@ -48,7 +45,7 @@ describe('onMessageHandler', () => {
     username: author,
   }
   config.sleepInterval = 1
-  config.messageScore = 0.1
+  config.messageScore = 0
   config.TWITCH_USERNAME = 'testUsername'
 
   test('chat message is posted normally', () => {
@@ -63,15 +60,15 @@ describe('onMessageHandler', () => {
 
     onMessageHandler(target, context, msg, false)
 
-    expect(logMessage).toBeCalledTimes(1)
-    expect(logMessage).toBeCalledWith(msg, mapMessageToScoreValueMock)
-
     expect(sayInChannel).toBeCalledTimes(1)
-    expect(sayInChannel).toBeCalledWith(msg)
+    expect(sayInChannel).toBeCalledWith(
+      msg,
+      mapMessageToScoreValueMock,
+      context['message-type']
+    )
   })
 
   test('action message is posted with /me', () => {
-    context['message-type'] = 'action'
     const msg = 'action message'
     const mapMessageToScoreValueMock = 1
 
@@ -81,13 +78,19 @@ describe('onMessageHandler', () => {
       score: mapMessageToScoreValueMock,
     })
 
-    onMessageHandler(target, context, msg, false)
-
-    expect(logMessage).toBeCalledTimes(1)
-    expect(logMessage).toBeCalledWith(msg, mapMessageToScoreValueMock)
+    onMessageHandler(
+      target,
+      { ...context, 'message-type': 'action', username: 'different author' },
+      msg,
+      false
+    )
 
     expect(sayInChannel).toBeCalledTimes(1)
-    expect(sayInChannel).toBeCalledWith(`/me ${msg}`)
+    expect(sayInChannel).toBeCalledWith(
+      msg,
+      mapMessageToScoreValueMock,
+      'action'
+    )
   })
 
   test('message not posted if below config.messageScore', () => {
@@ -102,8 +105,6 @@ describe('onMessageHandler', () => {
     })
 
     onMessageHandler(target, context, msg, false)
-
-    expect(logMessage).toBeCalledTimes(0)
 
     expect(sayInChannel).toBeCalledTimes(0)
   })
@@ -132,7 +133,7 @@ describe('onMessageHandler', () => {
     onMessageHandler(target, context, msgURL, false)
     onMessageHandler(target, context, msgSameAuthor, false)
 
-    expect(logMessage).toBeCalledTimes(0)
+    expect(sayInChannel).toBeCalledTimes(0)
   })
 
   test('properly calculates emoteCodes', () => {

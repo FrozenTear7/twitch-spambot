@@ -13,7 +13,6 @@ describe('logMessage', () => {
   test('print correct output to the console', () => {
     const channelName = 'testChannel'
     const msg = 'test message'
-    const score = 10
     const currentDate = new Date('January 1, 2020 12:00:00')
     const currentDateFormatted = currentDate.toLocaleTimeString('pl-PL')
 
@@ -21,13 +20,42 @@ describe('logMessage', () => {
     const logSpy = jest.spyOn(global.console, 'log')
     MockDate.set(currentDate)
 
+    let score = 1.11
     logMessage(msg, score)
 
-    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith(
+      `[${currentDateFormatted}, #${channelName}, score:   ${score.toFixed(
+        2
+      )}]: ${msg}`
+    )
+
+    score = 11.1
+    logMessage(msg, score)
+
+    expect(logSpy).toBeCalledWith(
+      `[${currentDateFormatted}, #${channelName}, score:  ${score.toFixed(
+        2
+      )}]: ${msg}`
+    )
+
+    score = 111
+    logMessage(msg, score)
+
     expect(logSpy).toBeCalledWith(
       `[${currentDateFormatted}, #${channelName}, score: ${score.toFixed(
         2
       )}]: ${msg}`
     )
+
+    score = 1111
+    logMessage(msg, score)
+
+    expect(logSpy).toBeCalledWith(
+      `[${currentDateFormatted}, #${channelName}, score: ${score.toFixed(
+        1
+      )}]: ${msg}`
+    )
+
+    expect(logSpy).toBeCalledTimes(4)
   })
 })

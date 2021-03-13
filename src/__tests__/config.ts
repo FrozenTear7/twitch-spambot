@@ -125,7 +125,7 @@ describe('config', () => {
       clientOptions: clientOptionsCheck,
       readInterval: 3000,
       sleepInterval: 30000,
-      messageScore: 4,
+      messageScore: 5,
       mentionResponse: undefined,
     }
 
