@@ -48,6 +48,25 @@ describe('calculateScore', () => {
     expect(result).toBe(0.5)
   })
 
+  test('add double the score for identical messages', () => {
+    const msg = 'test'
+    const currentMessages: MessageData[] = [
+      {
+        message: msg,
+        messageType: 'chat',
+        timestamp: Math.floor(Date.now()),
+        emoteCodes: [1, 2, 3],
+      },
+    ]
+
+    const result = calculateScore(msg, currentMessages)
+
+    expect(getBaseSpam).toBeCalledTimes(1)
+    expect(getBaseSpam).toBeCalledWith(currentMessages[0].message)
+
+    expect(result).toBe(2.0)
+  })
+
   test('returns valid score for non-existing currentMessages', () => {
     const msg = 'test'
     const currentMessages: MessageData[] = []
