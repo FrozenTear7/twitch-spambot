@@ -19,7 +19,7 @@ const programArgs = process.argv.slice(2)
 const channelName = programArgs[0]
 const readInterval = +programArgs[1] || 3000 // in [ms]
 const sleepInterval = +programArgs[2] || 30000 // in [ms]
-const messageScore = +programArgs[3] || 4
+const messageScore = +programArgs[3] || 5
 const mentionResponse = programArgs[4] // don't autorespond if none provided, otherwise respond with the provided message
 
 if (!channelName) {

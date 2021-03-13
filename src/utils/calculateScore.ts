@@ -12,7 +12,7 @@ export const calculateScore = (
     const baseSpam = getBaseSpam(similarMsg)
 
     if (similarMsg === msg || baseSpam === msg) {
-      score += 2.0 // Double the score if messages are similar
+      score += 2.0 // Double the score if messages are identical
     } else {
       const similarity = stringSimilarity.compareTwoStrings(similarMsg, msg)
       const baseSpamSimilarity = stringSimilarity.compareTwoStrings(
