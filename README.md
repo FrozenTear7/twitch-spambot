@@ -9,6 +9,7 @@
 ![Coverage - functions](./badges/badge-functions.svg)
 ![Coverage - lines](./badges/badge-lines.svg)
 
+[![Releases downloads](https://img.shields.io/github/downloads/FrozenTear7/twitch-spambot/total)](https://github.com/FrozenTear7/twitch-spambot/releases)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/releases)
 [![GitHub Release Date](https://img.shields.io/github/release-date/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/releases)
 [![License](https://img.shields.io/github/license/FrozenTear7/twitch-spambot)](https://github.com/FrozenTear7/twitch-spambot/blob/master/LICENSE)

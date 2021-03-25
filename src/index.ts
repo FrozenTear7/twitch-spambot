@@ -1,11 +1,13 @@
 import { handleCatch } from './utils/handleCatch'
 import tmi from 'tmi.js'
-import whitelistEmotes from '../config/whitelistEmotes.json'
+import { channels } from '../config/whitelistEmotes.json'
+import { version } from '../package.json'
 import { getAllowedEmotes } from './messages/emoteUtils'
 import { onNoticeHandler } from './handlers/onNoticeHandler'
 import { onMessageHandler } from './handlers/onMessageHandler'
 import config from './config'
 import colors from 'colors'
+import axios from 'axios'
 
 // Export globally unchanged variables
 export let allowedEmotes: number[] = []
@@ -17,7 +19,7 @@ const main = async () => {
   // Fetch global and your whitelisted emotes
   try {
     console.log(colors.dim(colors.cyan('Fetching all global emotes')))
-    allowedEmotes = await getAllowedEmotes(whitelistEmotes.channels)
+    allowedEmotes = await getAllowedEmotes(channels)
     console.log(colors.cyan('Finished fetching global emotes'))
   } catch (e) {
     handleCatch('Exception while fetching emotes', e)
@@ -47,13 +49,34 @@ process.on('SIGINT', () => {
   process.exit(0)
 })
 
-main().then(
-  () => {
-    console.log(colors.green('Bot started'))
-  },
-  (e) => {
-    console.log(
-      colors.red(`An exception occured at top level: ${(e as Error).message}`)
+// Check if the bot version is up-to-date
+axios
+  .get(
+    'https://api.github.com/repos/frozentear7/twitch-spambot/releases/latest'
+  )
+  .then((res) => {
+    if (res.data) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (`v${version}` !== res.data.tag_name) {
+        console.log(
+          colors.red(
+            'Your version of the bot is outdated. Please download the new version from: https://github.com/FrozenTear7/twitch-spambot/releases'
+          )
+        )
+      }
+    } else {
+      console.log(colors.red('Failed to check the latest version of the bot'))
+    }
+  })
+  .catch((e) => {
+    handleCatch(
+      'An exception occured, while checking the latest version of the bot',
+      e
     )
-  }
-)
+  })
+  .finally(() => {
+    // Run the bot after version checks
+    main()
+      .then(() => console.log(colors.green('Bot started')))
+      .catch((e) => handleCatch('An exception occured at top level', e))
+  })

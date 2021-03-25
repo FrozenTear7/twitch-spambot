@@ -26,15 +26,16 @@ jest.mock('./../../utils/logMessage', () => ({
 }))
 
 describe('sayInChannel', () => {
+  const msg = 'test message'
   const channelName = 'testChannel'
+  const score = 2
+  const messageType = 'chat'
+  config.channelName = channelName
+  config.sleepInterval = 0
+
+  const clientSaySpy = jest.spyOn(client, 'say')
 
   test('correctly autoresponds', async () => {
-    const msg = 'autoresponse test'
-
-    config.channelName = channelName
-    config.sleepInterval = 0
-    const clientSaySpy = jest.spyOn(client, 'say')
-
     await sayInChannel(msg)
 
     expect(clientSaySpy).toBeCalledTimes(1)
@@ -42,14 +43,6 @@ describe('sayInChannel', () => {
   })
 
   test('prints correct output to the console', async () => {
-    const msg = 'test message'
-    const score = 2
-    const messageType = 'chat'
-    config.channelName = channelName
-    config.sleepInterval = 0
-
-    const clientSaySpy = jest.spyOn(client, 'say')
-
     MockDate.set(new Date('January 1, 2020 12:00:00'))
 
     await sayInChannel(msg, score, messageType)
@@ -67,17 +60,9 @@ describe('sayInChannel', () => {
   })
 
   test('prints action message correctly to the console', async () => {
-    const msg = 'test message'
-    const score = 2
-    const messageType = 'action'
-    config.channelName = channelName
-    config.sleepInterval = 0
-
-    const clientSaySpy = jest.spyOn(client, 'say')
-
     MockDate.set(new Date('January 1, 2020 14:00:00'))
 
-    await sayInChannel(msg, score, messageType)
+    await sayInChannel(msg, score, 'action')
 
     expect(logMessage).toBeCalledTimes(1)
     expect(logMessage).toBeCalledWith(msg, score)
@@ -86,20 +71,25 @@ describe('sayInChannel', () => {
     expect(clientSaySpy).toBeCalledWith(channelName, `/me ${msg}`)
   })
 
-  test('properly handles the error', async () => {
-    const msg = 'test message'
-    const score = 2
-    const messageType = 'chat'
-    config.channelName = channelName
-    config.sleepInterval = 0
+  test("message won't be sent during cooldown", async () => {
+    MockDate.set(new Date('January 1, 2020 15:00:00'))
+    config.sleepInterval = 999999999
 
+    await sayInChannel(msg, score, messageType)
+
+    expect(logMessage).toBeCalledTimes(0)
+    expect(clientSaySpy).toBeCalledTimes(0)
+    config.sleepInterval = 0
+  })
+
+  test('properly handles the error', async () => {
     const clientSayError = new Error('errorMock')
 
-    MockDate.set(new Date('January 1, 2020 15:00:00'))
+    MockDate.set(new Date('January 1, 2020 16:00:00'))
 
     config.channelName = channelName
     jest.spyOn(global.console, 'log')
-    jest.spyOn(client, 'say').mockImplementation(() => {
+    clientSaySpy.mockImplementation(() => {
       throw clientSayError
     })
 

@@ -1,5 +1,5 @@
 import { ignoreCharacters, multispamRegex } from './../utils/constants'
-import ignoredWordsJson from '../../config/ignoredWords.json'
+import { ignoredWords } from '../../config/ignoredWords.json'
 
 export const checkIgnoredMessage = (
   authorsSeen: string[],
@@ -10,9 +10,7 @@ export const checkIgnoredMessage = (
   // Skip commands, user whispers and messages containing ignored words from ./config/ignoredWords.json
   return (
     ignoreCharacters.includes(msg[0]) || // Check for bot commands
-    ignoredWordsJson.ignoredWords.some((substring) =>
-      msg.includes(substring)
-    ) ||
+    ignoredWords.some((substring) => msg.includes(substring)) ||
     // Convert the username and the message to lowercase since for example Chatterino autocompletes username in lowercase
     authorsSeen.some((author) =>
       msg.toLowerCase().includes(author.toLowerCase())
