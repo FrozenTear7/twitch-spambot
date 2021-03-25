@@ -29,7 +29,7 @@ if we're not subbed.
 
 ## How to run the program
 
-[_Node.js_](https://nodejs.org/) is required, the program was created with _v14.4.0_.
+[**Node.js**](https://nodejs.org/) is required, the program works under _Windows_, _Ubuntu_ and _macOS_, with Node _v14_ and _v14_.
 
 _.env_ file is required to provide data for the api and the config.
 Create an _.env_ file consiting of values as shown below:
