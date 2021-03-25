@@ -1,8 +1,6 @@
 # twitch-spambot
 
-[![Buddy](https://assets.buddy.works/automated-dark.svg)](https://buddy.works/)
-
-![Buddy master pipeline](https://app.buddy.works/frozentear7/twitch-spambot/pipelines/pipeline/312651/badge.svg?token=67c90bad49816f04938626247f8b89bb1bbf782b583b5fc4b78a863b0d4d18df)
+[![CI](https://github.com/FrozenTear7/twitch-spambot/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/FrozenTear7/twitch-spambot/actions/workflows/CI.yml)
 
 ![Coverage - statements](./badges/badge-statements.svg)
 ![Coverage - branches](./badges/badge-branches.svg)
