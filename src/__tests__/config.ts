@@ -75,6 +75,9 @@ describe('config', () => {
       mentionResponse,
     ]
 
+    process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.CLIENT_TOKEN = 'TestToken'
+
     const config = require('../../src/config').default
     const clientOptionsCheck = {
       connection: {
