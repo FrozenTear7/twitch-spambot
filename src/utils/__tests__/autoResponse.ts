@@ -6,7 +6,6 @@ import config from '../../config'
 jest.useFakeTimers()
 
 jest.mock('../../config', () => ({ mentionResponse: jest.fn() }))
-jest.mock('../../config')
 jest.mock('../../messages/sayInChannel')
 jest.mock('../../index', () => ({ client: jest.fn() }))
 
