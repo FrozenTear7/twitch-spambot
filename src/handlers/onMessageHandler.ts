@@ -33,8 +33,8 @@ export const onMessageHandler = (
   void autoResponse(msg, author)
 
   // Skip sub emotes
-  const emoteCodes: number[] = context.emotes
-    ? Object.keys(context.emotes).map((code) => +code)
+  const emoteCodes: string[] = context.emotes
+    ? Object.keys(context.emotes).map((code) => code)
     : []
 
   // Skip if this author already posted something in the given interval or if detected an URL

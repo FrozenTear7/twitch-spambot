@@ -1,11 +1,10 @@
 export interface Emote {
-  code: string
-  emoticon_set: number
-  id: number
+  id: string
+  name: string
 }
 
 export interface ChannelInfo {
-  emotes: Emote[]
+  data: Emote[]
 }
 
 export type MessageType = 'chat' | 'action' | 'whisper' | undefined
@@ -15,5 +14,5 @@ export interface MessageData {
   messageType: MessageType
   author?: string
   timestamp: number
-  emoteCodes: number[]
+  emoteCodes: string[]
 }

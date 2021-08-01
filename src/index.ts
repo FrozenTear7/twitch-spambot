@@ -10,7 +10,7 @@ import colors from 'colors'
 import axios from 'axios'
 
 // Export globally unchanged variables
-export let allowedEmotes: number[] = []
+export let allowedEmotes: string[] = []
 export let client: tmi.Client
 
 const main = async () => {

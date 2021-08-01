@@ -37,9 +37,47 @@ Create an _.env_ file consiting of values as shown below:
 ```bash
 TWITCH_USERNAME=YourUsername
 CLIENT_TOKEN=oauth:YourOAuthCodeGoesHere
+CLIENT_ID=YourClientIdCodeGoesHere
 ```
 
 Client token can be retrieved from [here](https://twitchapps.com/tmi/).
+
+Client ID can be retrieved by making a HTTP request to an endpoint: `https://api.twitch.tv/kraken` and reading it from the response JSON in the `client_id` field:
+
+```javascript
+{
+    "token": {
+        "valid": true,
+        "authorization": {
+            "scopes": [
+                ...
+            ],
+            "created_at": ...,
+            "updated_at": ...
+        },
+        "user_name": "USERNAME",
+        "user_id": "ID",
+        "client_id": "CLIENT_ID"
+    }
+}
+```
+
+You need to add additional data to the request's headers:
+
+- Accept: application/vnd.twitchtv.v5+json
+- Authorization: OAuth `<YOURTOKEN>`
+
+Replace the `<YOURTOKEN>` part with the OAuth token you got earlier without the `oauth:` part.
+
+An example CURL request:
+
+```bash
+curl -H 'Accept: application/vnd.twitchtv.v5+json' \
+-H 'Authorization: OAuth <YOURTOKEN>' \
+-X GET https://api.twitch.tv/kraken
+```
+
+Getting the Client ID might get automated in the future.
 
 ### Release version
 

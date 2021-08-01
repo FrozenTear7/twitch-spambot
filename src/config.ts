@@ -5,9 +5,9 @@ dotenv.config()
 
 // .env config
 
-const { TWITCH_USERNAME, CLIENT_TOKEN } = process.env
+const { TWITCH_USERNAME, CLIENT_TOKEN, CLIENT_ID } = process.env
 
-if (!TWITCH_USERNAME || !CLIENT_TOKEN) {
+if (!TWITCH_USERNAME || !CLIENT_TOKEN || !CLIENT_ID) {
   console.log(colors.red('Please provide a valid .env config'))
   process.exit(0)
 }
@@ -44,6 +44,7 @@ const clientOptions = {
 export default {
   TWITCH_USERNAME,
   CLIENT_TOKEN,
+  CLIENT_ID,
   channelName,
   clientOptions,
   readInterval,

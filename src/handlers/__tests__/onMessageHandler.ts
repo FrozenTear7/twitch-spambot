@@ -150,7 +150,7 @@ describe('onMessageHandler', () => {
 
     onMessageHandler(target, context, msg, false)
 
-    expect(hasSubEmotes).toBeCalledWith(allowedEmotes, [+emoteCode])
+    expect(hasSubEmotes).toBeCalledWith(allowedEmotes, [emoteCode])
     expect(hasSubEmotes).toBeCalledTimes(2)
   })
 })

@@ -3,11 +3,10 @@ import toChannelInfo from '../toChannelInfo'
 describe('toChannelInfo', () => {
   test('properly parses an Emote', () => {
     const channelInfo = {
-      emotes: [
+      data: [
         {
-          code: 'test',
-          emoticon_set: 0,
-          id: 0,
+          id: '0',
+          name: 'vadiChad',
         },
       ],
     }
@@ -16,11 +15,11 @@ describe('toChannelInfo', () => {
   })
 
   test('properly throws an Error for missing parameters', () => {
-    const valuesToTest = [{}, { emotes: {} }]
+    const valuesToTest = [{}, { data: {} }]
 
     valuesToTest.forEach((valueToTest) =>
       expect(() => toChannelInfo(valueToTest)).toThrowError(
-        'Incorrect or missing parameter: emotes'
+        'Incorrect or missing parameter: data'
       )
     )
   })

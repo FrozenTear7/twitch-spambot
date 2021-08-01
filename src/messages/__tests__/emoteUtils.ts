@@ -10,8 +10,8 @@ jest.mock('./../../../src/messages/fetchWhitelistedEmotes')
 describe('emoteUtils', () => {
   test('print correct output to the console', async () => {
     const whitelistChannels = ['123321']
-    const emoteArray1 = [1]
-    const emoteArray2 = [2]
+    const emoteArray1 = ['1']
+    const emoteArray2 = ['2']
     const emoteArrayCombined = [...emoteArray1, ...emoteArray2]
 
     const fetchEmotesMock = mocked(fetchEmotes, true)
@@ -39,7 +39,7 @@ describe('emoteUtils', () => {
 describe('hasSubEmotes', () => {
   test('returns false for empty emoteCodes array', () => {
     const allowedEmotes = [123, 456]
-    const emoteCodes: number[] = []
+    const emoteCodes: string[] = []
 
     const result = hasSubEmotes(allowedEmotes, emoteCodes)
 
@@ -47,8 +47,8 @@ describe('hasSubEmotes', () => {
   })
 
   test('returns false for intersecting emote codes', () => {
-    const allowedEmotes = [123, 456]
-    const emoteCodes = [123]
+    const allowedEmotes = ['123', '456']
+    const emoteCodes = ['123']
 
     const result = hasSubEmotes(allowedEmotes, emoteCodes)
 
@@ -56,8 +56,8 @@ describe('hasSubEmotes', () => {
   })
 
   test('print correct output to the console', () => {
-    const allowedEmotes = [123, 456]
-    const emoteCodes = [789]
+    const allowedEmotes = ['123', '456']
+    const emoteCodes = ['789']
 
     const result = hasSubEmotes(allowedEmotes, emoteCodes)
 
