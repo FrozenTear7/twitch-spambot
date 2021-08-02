@@ -38,7 +38,7 @@ describe('emoteUtils', () => {
 
 describe('hasSubEmotes', () => {
   test('returns false for empty emoteCodes array', () => {
-    const allowedEmotes = [123, 456]
+    const allowedEmotes = ['123', '456']
     const emoteCodes: string[] = []
 
     const result = hasSubEmotes(allowedEmotes, emoteCodes)

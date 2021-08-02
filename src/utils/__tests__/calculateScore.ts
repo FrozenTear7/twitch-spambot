@@ -15,7 +15,7 @@ describe('calculateScore', () => {
         message: 'test2',
         messageType: 'chat',
         timestamp: Math.floor(Date.now()),
-        emoteCodes: [1, 2, 3],
+        emoteCodes: ['1', '2', '3'],
       },
     ]
 
@@ -55,7 +55,7 @@ describe('calculateScore', () => {
         message: msg,
         messageType: 'chat',
         timestamp: Math.floor(Date.now()),
-        emoteCodes: [1, 2, 3],
+        emoteCodes: ['1', '2', '3'],
       },
     ]
 
