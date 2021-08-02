@@ -7,7 +7,7 @@ jest.mock('../../../src/messages/fetchEmotes')
 describe('fetchWhitelistedEmotes', () => {
   test('returns empty result for no channels', async () => {
     const channels: string[] = []
-    const expectedResult: number[] = []
+    const expectedResult: string[] = []
 
     const result = await fetchWhitelistedEmotes(channels)
 
@@ -15,8 +15,8 @@ describe('fetchWhitelistedEmotes', () => {
   })
 
   test('returns valid emotes for existing channels', async () => {
-    const channels: string[] = ['123456']
-    const channelEmotesMockData = [123, 456]
+    const channels = ['123456']
+    const channelEmotesMockData = ['123', '456']
 
     const fetchEmotesMock = mocked(fetchEmotes, true)
     fetchEmotesMock.mockImplementation(() => {

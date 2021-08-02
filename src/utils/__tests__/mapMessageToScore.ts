@@ -13,7 +13,7 @@ describe('mapMessageToScore', () => {
         message: 'test',
         messageType: 'chat',
         timestamp: Date.now(),
-        emoteCodes: [1],
+        emoteCodes: ['1'],
       },
     ]
     const scoreDataMock = 1

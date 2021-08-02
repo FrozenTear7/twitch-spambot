@@ -8,17 +8,17 @@ import toEmote from './toEmote'
 
 const toChannelInfo = (object: any): ChannelInfo => {
   return {
-    emotes: parseEmotes(object.emotes),
+    data: parseData(object.data),
   }
 }
 
 // Parsers
 
-const parseEmotes = (emotes: any): Emote[] => {
-  if (!exists(emotes) || !isArray(emotes)) {
-    throw new Error('Incorrect or missing parameter: emotes')
+const parseData = (data: any): Emote[] => {
+  if (!exists(data) || !isArray(data)) {
+    throw new Error('Incorrect or missing parameter: data')
   }
-  return emotes.map((x: any) => toEmote(x)) as Emote[]
+  return data.map((x: any) => toEmote(x)) as Emote[]
 }
 
 export default toChannelInfo

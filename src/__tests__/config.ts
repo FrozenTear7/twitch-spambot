@@ -11,7 +11,7 @@ describe('config', () => {
     jest.resetModules()
   })
 
-  test('exits on missing .env TWITCH_USERNAME and CLIENT_TOKEN', () => {
+  test('exits on missing .env TWITCH_USERNAME, CLIENT_TOKEN and CLIENT_ID', () => {
     const OLD_ENV = process.env
     process.env = { ...OLD_ENV }
 
@@ -55,6 +55,24 @@ describe('config', () => {
     expect(exitSpy).toBeCalledTimes(1)
     expect(exitSpy).toBeCalledWith(0)
 
+    // CLIENT_ID check
+
+    process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.CLIENT_TOKEN = 'TestToken'
+    process.env.CLIENT_ID = undefined
+
+    try {
+      require('../../src/config').default
+    } catch (e) {
+      expect((e as Error).message).toBe(exitMsg)
+    }
+
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a valid .env config')
+
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
+
     process.env = OLD_ENV
   })
 
@@ -77,6 +95,7 @@ describe('config', () => {
 
     process.env.TWITCH_USERNAME = 'TestUsername'
     process.env.CLIENT_TOKEN = 'TestToken'
+    process.env.CLIENT_ID = 'TestId'
 
     const config = require('../../src/config').default
     const clientOptionsCheck = {
@@ -93,6 +112,7 @@ describe('config', () => {
     const configCheck = {
       TWITCH_USERNAME: process.env.TWITCH_USERNAME,
       CLIENT_TOKEN: process.env.CLIENT_TOKEN,
+      CLIENT_ID: process.env.CLIENT_ID,
       channelName,
       clientOptions: clientOptionsCheck,
       readInterval: +readInterval,
@@ -124,6 +144,7 @@ describe('config', () => {
     const configCheck = {
       TWITCH_USERNAME: process.env.TWITCH_USERNAME,
       CLIENT_TOKEN: process.env.CLIENT_TOKEN,
+      CLIENT_ID: process.env.CLIENT_ID,
       channelName,
       clientOptions: clientOptionsCheck,
       readInterval: 3000,

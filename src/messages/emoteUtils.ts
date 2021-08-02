@@ -5,7 +5,7 @@ import { fetchEmotes } from './fetchEmotes'
 // Allow all global Twitch emotes available for everyone and the channels you're subbed to (from whitelistEmotes.json)
 export const getAllowedEmotes = async (
   whitelistChannels: string[]
-): Promise<number[]> => {
+): Promise<string[]> => {
   const globalEmotes = await fetchEmotes(globalChannel)
   const whitelistedEmotes = await fetchWhitelistedEmotes(whitelistChannels)
 
@@ -14,8 +14,8 @@ export const getAllowedEmotes = async (
 
 // Check if message contains any sub emotes (except for the channels you're subbed to)
 export const hasSubEmotes = (
-  allowedEmotes: number[],
-  emoteCodes: number[]
+  allowedEmotes: string[],
+  emoteCodes: string[]
 ): boolean => {
   return (
     emoteCodes.length !== 0 &&

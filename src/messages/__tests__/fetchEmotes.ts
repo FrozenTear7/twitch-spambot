@@ -1,5 +1,4 @@
 import { fetchEmotes } from '../fetchEmotes'
-import { emotesURI } from '../../utils/constants'
 import { mocked } from 'ts-jest/utils'
 import { ChannelInfo, Emote } from '../../types'
 import toChannelInfo from '../../utils/parseTypes/toChannelInfo'
@@ -14,9 +13,8 @@ describe('fetchEmotes', () => {
     const resMock = { data: 'dataMock' }
     const emotesMock = [
       {
-        code: '1',
-        emoticon_set: 1,
-        id: 1,
+        id: '1',
+        name: 'test',
       },
     ]
 
@@ -27,14 +25,13 @@ describe('fetchEmotes', () => {
     const toChannelInfoMock = mocked(toChannelInfo, true)
     toChannelInfoMock.mockImplementation(
       (): ChannelInfo => ({
-        emotes: emotesMock,
+        data: emotesMock,
       })
     )
 
     const result = await fetchEmotes(channelId)
 
     expect(axiosGetSpy).toBeCalledTimes(1)
-    expect(axiosGetSpy).toBeCalledWith(`${emotesURI}/${channelId}`)
 
     expect(toChannelInfoMock).toBeCalledTimes(1)
     expect(toChannelInfoMock).toBeCalledWith(resMock.data)
@@ -47,9 +44,8 @@ describe('fetchEmotes', () => {
     const resMock = {}
     const emotesMock = [
       {
-        code: '1',
-        emoticon_set: 1,
-        id: 1,
+        id: '1',
+        name: 'test',
       },
     ]
 
@@ -60,7 +56,7 @@ describe('fetchEmotes', () => {
     const toChannelInfoMock = mocked(toChannelInfo, true)
     toChannelInfoMock.mockImplementation(
       (): ChannelInfo => ({
-        emotes: emotesMock,
+        data: emotesMock,
       })
     )
 
@@ -73,7 +69,7 @@ describe('fetchEmotes', () => {
     }
 
     expect(axiosGetSpy).toBeCalledTimes(1)
-    expect(axiosGetSpy).toBeCalledWith(`${emotesURI}/${channelId}`)
+
     expect(toChannelInfoMock).toBeCalledTimes(0)
   })
 })

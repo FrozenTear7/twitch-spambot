@@ -2,6 +2,7 @@
 myScripts
 build/
 releases/
+target
 
 # Logs
 logs
