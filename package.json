@@ -1,6 +1,6 @@
 {
   "name": "twitch-spambot",
-  "version": "1.5.2",
+  "version": "1.6",
   "description": "An automated twitch spam user",
   "private": true,
   "author": "Paweł Mendroch",
