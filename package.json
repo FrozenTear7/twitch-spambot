@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.27.2",
     "colors": "^1.4.0",
     "dotenv": "^8.2.0",
     "request": "^2.88.2",
@@ -40,11 +40,11 @@
     "jest-coverage-badges": "^1.1.2",
     "lint-staged": "^10.5.3",
     "mockdate": "^3.0.2",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.18",
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "4.6"
+    "typescript": "^4.7.4"
   },
   "scripts": {
     "tsc": "tsc",
