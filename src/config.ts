@@ -1,13 +1,23 @@
-import dotenv from 'dotenv'
+import 'dotenv/config'
 import colors from 'colors'
-
-dotenv.config()
 
 // .env config
 
-const { TWITCH_USERNAME, CLIENT_TOKEN, CLIENT_ID } = process.env
+const {
+  TWITCH_USERNAME,
+  TWITCH_PASSWORD,
+  CLIENT_TOKEN,
+  CLIENT_ID,
+  CLIENT_SECRET,
+} = process.env
 
-if (!TWITCH_USERNAME || !CLIENT_TOKEN || !CLIENT_ID) {
+if (
+  !TWITCH_USERNAME ||
+  !TWITCH_PASSWORD ||
+  !CLIENT_TOKEN ||
+  !CLIENT_ID ||
+  !CLIENT_SECRET
+) {
   console.log(colors.red('Please provide a valid .env config'))
   process.exit(0)
 }
@@ -36,15 +46,17 @@ const clientOptions = {
   },
   identity: {
     username: process.env.TWITCH_USERNAME,
-    password: process.env.CLIENT_TOKEN,
+    password: process.env.TWITCH_PASSWORD,
   },
   channels: [channelName],
 }
 
 export default {
   TWITCH_USERNAME,
+  TWITCH_PASSWORD,
   CLIENT_TOKEN,
   CLIENT_ID,
+  CLIENT_SECRET,
   channelName,
   clientOptions,
   readInterval,

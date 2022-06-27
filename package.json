@@ -12,14 +12,13 @@
     "dotenv": "^8.2.0",
     "request": "^2.88.2",
     "string-similarity": "^4.0.4",
-    "tmi.js": "^1.7.5",
-    "typescript": "^4.2.2"
+    "tmi.js": "^1.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
     "@babel/preset-env": "^7.13.5",
     "@babel/preset-typescript": "^7.13.0",
-    "@tsconfig/node14": "^1.0.0",
+    "@tsconfig/node16": "^1.0.3",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.31",
     "@types/request": "^2.48.5",
@@ -44,7 +43,8 @@
     "nodemon": "^2.0.6",
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.2",
-    "ts-node-dev": "^1.1.6"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "4.6"
   },
   "scripts": {
     "tsc": "tsc",

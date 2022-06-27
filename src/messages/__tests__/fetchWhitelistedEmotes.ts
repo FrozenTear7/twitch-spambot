@@ -1,6 +1,6 @@
-import { fetchEmotes } from '../fetchEmotes'
-import { fetchWhitelistedEmotes } from '../fetchWhitelistedEmotes'
 import { mocked } from 'ts-jest/utils'
+import { fetchWhitelistedEmotes } from '../fetchWhitelistedEmotes'
+import { fetchChannelEmotes } from '../fetchEmotes'
 
 jest.mock('../../../src/messages/fetchEmotes')
 
@@ -18,7 +18,7 @@ describe('fetchWhitelistedEmotes', () => {
     const channels = ['123456']
     const channelEmotesMockData = ['123', '456']
 
-    const fetchEmotesMock = mocked(fetchEmotes, true)
+    const fetchEmotesMock = mocked(fetchChannelEmotes, true)
     fetchEmotesMock.mockImplementation(() => {
       return new Promise((resolve) => resolve(channelEmotesMockData))
     })

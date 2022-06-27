@@ -38,9 +38,28 @@ describe('config', () => {
     expect(exitSpy).toBeCalledTimes(1)
     expect(exitSpy).toBeCalledWith(0)
 
+    // TWITCH_PASSWORD check
+
+    process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.TWITCH_PASSWORD = undefined
+
+    try {
+      require('../../src/config').default
+    } catch (e) {
+      expect((e as Error).message).toBe(exitMsg)
+    }
+
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a valid .env config')
+
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
+
     // CLIENT_TOKEN check
 
     process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.TWITCH_PASSWORD = 'TestPassword'
+
     process.env.CLIENT_TOKEN = undefined
 
     try {
@@ -58,8 +77,31 @@ describe('config', () => {
     // CLIENT_ID check
 
     process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.TWITCH_PASSWORD = 'TestPassword'
+
     process.env.CLIENT_TOKEN = 'TestToken'
     process.env.CLIENT_ID = undefined
+
+    try {
+      require('../../src/config').default
+    } catch (e) {
+      expect((e as Error).message).toBe(exitMsg)
+    }
+
+    expect(logSpy).toBeCalledTimes(1)
+    expect(logSpy).toBeCalledWith('Please provide a valid .env config')
+
+    expect(exitSpy).toBeCalledTimes(1)
+    expect(exitSpy).toBeCalledWith(0)
+
+    // CLIENT_SECRET check
+
+    process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.TWITCH_PASSWORD = 'TestPassword'
+
+    process.env.CLIENT_TOKEN = 'TestToken'
+    process.env.CLIENT_ID = 'TestId'
+    process.env.CLIENT_SECRET = undefined
 
     try {
       require('../../src/config').default
@@ -94,8 +136,11 @@ describe('config', () => {
     ]
 
     process.env.TWITCH_USERNAME = 'TestUsername'
+    process.env.TWITCH_PASSWORD = 'TestPassword'
+
     process.env.CLIENT_TOKEN = 'TestToken'
     process.env.CLIENT_ID = 'TestId'
+    process.env.CLIENT_SECRET = 'TestSecret'
 
     const config = require('../../src/config').default
     const clientOptionsCheck = {
@@ -105,14 +150,16 @@ describe('config', () => {
       },
       identity: {
         username: process.env.TWITCH_USERNAME,
-        password: process.env.CLIENT_TOKEN,
+        password: process.env.TWITCH_PASSWORD,
       },
       channels: [channelName],
     }
     const configCheck = {
       TWITCH_USERNAME: process.env.TWITCH_USERNAME,
+      TWITCH_PASSWORD: process.env.TWITCH_PASSWORD,
       CLIENT_TOKEN: process.env.CLIENT_TOKEN,
       CLIENT_ID: process.env.CLIENT_ID,
+      CLIENT_SECRET: process.env.CLIENT_SECRET,
       channelName,
       clientOptions: clientOptionsCheck,
       readInterval: +readInterval,
@@ -137,14 +184,16 @@ describe('config', () => {
       },
       identity: {
         username: process.env.TWITCH_USERNAME,
-        password: process.env.CLIENT_TOKEN,
+        password: process.env.TWITCH_PASSWORD,
       },
       channels: [channelName],
     }
     const configCheck = {
       TWITCH_USERNAME: process.env.TWITCH_USERNAME,
+      TWITCH_PASSWORD: process.env.TWITCH_PASSWORD,
       CLIENT_TOKEN: process.env.CLIENT_TOKEN,
       CLIENT_ID: process.env.CLIENT_ID,
+      CLIENT_SECRET: process.env.CLIENT_SECRET,
       channelName,
       clientOptions: clientOptionsCheck,
       readInterval: 3000,

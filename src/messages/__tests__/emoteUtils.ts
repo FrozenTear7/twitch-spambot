@@ -1,8 +1,7 @@
-import { globalChannel } from '../../utils/constants'
-import { fetchEmotes } from '../fetchEmotes'
+import { mocked } from 'ts-jest/utils'
 import { fetchWhitelistedEmotes } from '../fetchWhitelistedEmotes'
 import { getAllowedEmotes, hasSubEmotes } from '../emoteUtils'
-import { mocked } from 'ts-jest/utils'
+import { fetchGlobalEmotes } from '../fetchEmotes'
 
 jest.mock('./../../../src/messages/fetchEmotes')
 jest.mock('./../../../src/messages/fetchWhitelistedEmotes')
@@ -14,8 +13,8 @@ describe('emoteUtils', () => {
     const emoteArray2 = ['2']
     const emoteArrayCombined = [...emoteArray1, ...emoteArray2]
 
-    const fetchEmotesMock = mocked(fetchEmotes, true)
-    fetchEmotesMock.mockImplementation(() => {
+    const fetchGlobalEmotesMock = mocked(fetchGlobalEmotes, true)
+    fetchGlobalEmotesMock.mockImplementation(() => {
       return new Promise((resolve) => resolve(emoteArray1))
     })
 
@@ -26,8 +25,8 @@ describe('emoteUtils', () => {
 
     const result = await getAllowedEmotes(whitelistChannels)
 
-    expect(fetchEmotesMock).toBeCalledTimes(1)
-    expect(fetchEmotesMock).toBeCalledWith(globalChannel)
+    expect(fetchGlobalEmotesMock).toBeCalledTimes(1)
+    expect(fetchGlobalEmotesMock).toBeCalledWith()
 
     expect(fetchWhitelistedEmotesMock).toBeCalledTimes(1)
     expect(fetchWhitelistedEmotesMock).toBeCalledWith(whitelistChannels)

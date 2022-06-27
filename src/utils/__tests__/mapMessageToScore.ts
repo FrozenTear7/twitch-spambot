@@ -1,7 +1,7 @@
+import { mocked } from 'ts-jest/utils'
 import { mapMessageToScore } from './../mapMessageToScore'
 import { MessageData } from './../../types'
 import { calculateScore } from './../calculateScore'
-import { mocked } from 'ts-jest/utils'
 
 jest.mock('./../calculateScore')
 

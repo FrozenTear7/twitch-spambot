@@ -1,5 +1,6 @@
 // URIs
-export const emotesURI = 'https://api.twitch.tv/helix/chat/emotes'
+export const globalEmotesURI = 'https://api.twitch.tv/helix/chat/emotes/global'
+export const channelEmotesURI = 'https://api.twitch.tv/helix/chat/emotes'
 
 // To ignore
 export const ignoreCharacters = ['+', '!', '@', '#', '$', '%', '^', '&', '*'] // Ignore commands, whispers, etc.
@@ -11,4 +12,3 @@ export const urlRegex =
 
 // Other consts
 export const cooldownTime = 30001
-export const globalChannel = 'global'

@@ -1,23 +1,18 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 14",
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "display": "Node 16",
 
   "compilerOptions": {
-    "lib": ["es2020"],
-    "module": "CommonJS",
-    "target": "es2020",
+    "lib": ["es2021"],
+    "module": "commonjs",
+    "target": "es2021",
     "outDir": "./build/",
 
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "Node"
-  },
-  "exclude": ["jest.config.ts"]
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  }
 }

@@ -36,55 +36,25 @@ Create an _.env_ file consiting of values as shown below:
 
 ```bash
 TWITCH_USERNAME=YourUsername
-CLIENT_TOKEN=oauth:YourOAuthCodeGoesHere
-CLIENT_ID=YourClientIdCodeGoesHere
+TWITCH_PASSWORD=oauth:YourOAuthCodeGoesHere
+
+CLIENT_ID=YourClientId
+CLIENT_SECRET=YourClientSecret
+CLIENT_TOKEN=YourClientToken
 ```
 
-Client token can be retrieved from [here](https://twitchapps.com/tmi/).
+Twitch password OAuth token (`TWITCH_PASSWORD`) can be retrieved from [here](https://twitchapps.com/tmi/).
 
-Client ID can be retrieved by making a HTTP request to an endpoint: `https://api.twitch.tv/kraken` and reading it from the response JSON in the `client_id` field:
-
-```javascript
-{
-    "token": {
-        "valid": true,
-        "authorization": {
-            "scopes": [
-                ...
-            ],
-            "created_at": ...,
-            "updated_at": ...
-        },
-        "user_name": "USERNAME",
-        "user_id": "ID",
-        "client_id": "CLIENT_ID"
-    }
-}
-```
-
-You need to add additional data to the request's headers:
-
-- Accept: application/vnd.twitchtv.v5+json
-- Authorization: OAuth `<YOURTOKEN>`
-
-Replace the `<YOURTOKEN>` part with the OAuth token you got earlier without the `oauth:` part.
-
-An example CURL request:
-
-```bash
-curl -H 'Accept: application/vnd.twitchtv.v5+json' \
--H 'Authorization: OAuth <YOURTOKEN>' \
--X GET https://api.twitch.tv/kraken
-```
-
-Getting the Client ID might get automated in the future.
+Client variables require you to [register your own application](https://dev.twitch.tv/docs/authentication/register-app).
+After you're done, copy the Client ID given to the application as well as the Client Secret.
+Then you can retrieve your client token (`CLIENT_TOKEN`) via [Twitch CLI](https://dev.twitch.tv/docs/cli/token-command).
 
 ### Release version
 
 If you're running a release downloaded from the [releases page](https://github.com/FrozenTear7/twitch-spambot/releases):
 
 ```bash
-yarn install --production
+yarn --production
 
 yarn start CHANNEL_NAME
 # or
@@ -96,7 +66,7 @@ yarn start CHANNEL_NAME 3000 30000 5
 Otherwise if you're running the current master build:
 
 ```bash
-yarn install
+yarn
 ```
 
 and then:
@@ -104,15 +74,15 @@ and then:
 - if you want to edit the code and made your own changes, run the TypeScript version
 
 ```bash
-yarn run dev CHANNEL_NAME
+yarn dev CHANNEL_NAME
 # or
-yarn run dev CHANNEL_NAME 3000 30000 5
+yarn dev CHANNEL_NAME 3000 30000 5
 ```
 
 - if you want to compile the TypeScript to pure JavaScript
 
 ```bash
-yarn run tsc # to make a build directory
+yarn tsc # to make a build directory
 
 yarn start:dev CHANNEL_NAME
 # or
@@ -183,7 +153,7 @@ If you're subscired to a streamer and want to user their emotes with this bot, a
 
 Since it would be troublesome for many people to create their own credentials for Twitch API requests you have to add the ID instead of the channel to simplify the process.
 
-At the moment being one example website that allows finding channel IDs by providing usernames can be found [here](https://staging.streamweasels.com/support/convert-twitch-username-to-user-id/).
+At the moment being one example website that allows finding channel IDs by providing usernames can be found [here](https://s.kdy.ch/twitchid/).
 After getting the channel ID paste it in as:
 
 ```javascript

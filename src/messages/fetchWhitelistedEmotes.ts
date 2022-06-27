@@ -1,4 +1,4 @@
-import { fetchEmotes } from './fetchEmotes'
+import { fetchChannelEmotes } from './fetchEmotes'
 
 export const fetchWhitelistedEmotes = async (
   channels: string[]
@@ -7,7 +7,7 @@ export const fetchWhitelistedEmotes = async (
 
   if (channels.length > 0) {
     for (const channelId of channels) {
-      const channelEmotes = await fetchEmotes(channelId)
+      const channelEmotes = await fetchChannelEmotes(channelId)
       result = [...result, ...channelEmotes]
     }
   }

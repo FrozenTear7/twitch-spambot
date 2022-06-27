@@ -1,12 +1,11 @@
-import { globalChannel } from './../utils/constants'
+import { fetchGlobalEmotes } from './fetchEmotes'
 import { fetchWhitelistedEmotes } from './fetchWhitelistedEmotes'
-import { fetchEmotes } from './fetchEmotes'
 
 // Allow all global Twitch emotes available for everyone and the channels you're subbed to (from whitelistEmotes.json)
 export const getAllowedEmotes = async (
   whitelistChannels: string[]
 ): Promise<string[]> => {
-  const globalEmotes = await fetchEmotes(globalChannel)
+  const globalEmotes = await fetchGlobalEmotes()
   const whitelistedEmotes = await fetchWhitelistedEmotes(whitelistChannels)
 
   return [...globalEmotes, ...whitelistedEmotes]
